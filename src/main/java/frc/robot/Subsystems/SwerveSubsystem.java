@@ -57,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
     SwerveModulePosition[] saas;
         
-    private final Pigeon2 pigeon = new Pigeon2(5, "SwerveCAN");
+    private final Pigeon2 pigeon = new Pigeon2(5, "rio");
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(0),
                                                                         new SwerveModulePosition[]{
                                                                             frontLeft.GetModulePosition(),
@@ -109,12 +109,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void zeroHeading() {
         pigeon.reset();
+        SmartDashboard.putBoolean("saas", true);
     }
 
     //Correcao da orientacao do robo (-90)
     public double getHeading() {
-        // return Math.IEEEremainder(pigeon.getYaw().getValueAsDouble() - 90,360);
-        return -90;
+        return Math.IEEEremainder(pigeon.getYaw().getValueAsDouble() - 90,360);
+        // return -90;
     }
 
     public Rotation2d getRotation2d() {
@@ -145,10 +146,10 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 
-        SmartDashboard.putNumber("angle0", frontLeft.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("angle1", backLeft.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("angle2", frontRight.getAbsoluteEncoderRad());
-        SmartDashboard.putNumber("angle3", backRight.getAbsoluteEncoderRad());
+        SmartDashboard.putNumber("angle0", frontLeft.getAbsoluteEncoderDeg());
+        SmartDashboard.putNumber("angle1", backLeft.getAbsoluteEncoderDeg());
+        SmartDashboard.putNumber("angle2", frontRight.getAbsoluteEncoderDeg());
+        SmartDashboard.putNumber("angle3", backRight.getAbsoluteEncoderDeg());
     }
 
     public void stopModules() {

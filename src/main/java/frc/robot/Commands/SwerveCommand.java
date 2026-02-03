@@ -1,5 +1,7 @@
 package frc.robot.Commands;
 import java.util.function.Supplier;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -15,12 +17,13 @@ public class SwerveCommand extends Command {
     private Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     private Supplier<Boolean> fieldOrientedFunction;
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+    private Supplier<Boolean> rotationButton;
 
     private PS5Controller controller = new PS5Controller(0);
 
     public SwerveCommand(SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction) {
+            Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> rotationButton) {
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
@@ -29,6 +32,7 @@ public class SwerveCommand extends Command {
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+        this.rotationButton = rotationButton;
         addRequirements(swerveSubsystem);
     }
 
@@ -41,15 +45,24 @@ public class SwerveCommand extends Command {
         // 1. Get real-time joystick inputs
         double xSpeed;
         double ySpeed;
-        double turningSpeed = turningSpdFunction.get();
+        double turningSpeed ;
         if (controller.getPSButton()){
 
             xSpeed = 0;
             ySpeed = -0.1;
-
-        }else{
+            turningSpeed = turningSpdFunction.get();
+        }
+        else if (rotationButton.get()){
+            PIDController pid = new PIDController(0.01,0,0);
+            turningSpeed = pid.calculate(swerveSubsystem.getHeading(), 90);
+            xSpeed = 0;
+            ySpeed = 0;
+            
+        }
+        else{
             xSpeed = xSpdFunction.get();
             ySpeed = ySpdFunction.get();
+            turningSpeed = turningSpdFunction.get();
         }
 
         // 2. Apply deadband
@@ -65,14 +78,20 @@ public class SwerveCommand extends Command {
 
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
-        if (fieldOrientedFunction.get()) {
+        // if (fieldOrientedFunction.get()) {
             // Relative to field
-            chassisSpeeds = new ChassisSpeeds(xSpeed, -ySpeed, turningSpeed);
-        } else {
-            // Relative to robot
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xSpeed, -ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+        // } else {
+        //     // Relative to robot
+        //     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xSpeed, -ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
        
+        // }
+
+        if (fieldOrientedFunction.get()){
+            swerveSubsystem.zeroHeading();
         }
+
+        
 
         // 5. Convert chassis speeds to individual module states
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);

@@ -1,5 +1,6 @@
 package frc.robot.Subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
 import java.util.MissingFormatWidthException;
@@ -76,6 +77,11 @@ public class SwerveModule {
 
     public double getAbsoluteEncoderRad() {
         double angle = absoluteEncoder.getAbsolutePosition().getValue().in(Radians);
+        return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
+    }
+
+    public double getAbsoluteEncoderDeg() {
+        double angle = absoluteEncoder.getAbsolutePosition().getValue().in(Degrees);
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
 

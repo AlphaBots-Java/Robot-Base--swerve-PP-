@@ -22,22 +22,22 @@ public class RobotContainer {
     Supplier<Double> axisZero = () -> this.controller.getRawAxis(0);
     Supplier<Double> axisOne = () -> this.controller.getRawAxis(1);
     Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
-    Supplier<Boolean> buttonSup = () -> this.buttonController.getPSButtonPressed();
+    Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
+    Supplier<Boolean> rotSup = () -> this.buttonController.getTouchpadButton();
 
     swerve.setDefaultCommand(new SwerveCommand(
       this.swerve,
       axisZero,
       axisOne,
       axisTwo,
-      buttonSup
+      buttonSup,
+      rotSup
     ));
     
   }
 
   private void configureBindings() {
-    if(buttonController.getOptionsButtonPressed()){
-      swerve.zeroHeading();
-    }
+    
   }
 
   public Command getAutonomousCommand() {
