@@ -91,8 +91,8 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                               backRight.getState()), 
                               (speeds, feedforward) -> driveRobotRelative(speeds),  
                               new PPHolonomicDriveController( // PathPlanner`s lib for controlling drivetrains
-                              new PIDConstants(5.0, 0.0, 0.0), 
-                              new PIDConstants(5.0, 0.0, 0.0)),
+                              new PIDConstants(1.0, 0.0, 0.0), 
+                              new PIDConstants(1.0, 0.0, 0.0)),
                               config ,
                               () -> {
                                 var alliance = DriverStation.getAlliance();
@@ -113,8 +113,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     //Correcao da orientacao do robo (-90)
     public double getHeading() {
-        return Math.IEEEremainder(pigeon.getYaw().getValueAsDouble() - 90,360);
-        // return -90;
+        // return Math.IEEEremainder(pigeon.getYaw().getValueAsDouble() - 90,360);
+        return -90;
     }
 
     public Rotation2d getRotation2d() {

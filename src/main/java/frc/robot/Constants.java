@@ -8,9 +8,9 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
     public static final class ModuleConstants {
-        public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-        public static final double kDriveMotorGearRatio = 1 / 6.12;
-        public static final double kTurningMotorGearRatio = 1 / 21.42;
+        public static final double kWheelDiameterMeters = Units.inchesToMeters(3.5);
+        public static final double kDriveMotorGearRatio = 1 / 5.68;
+        public static final double kTurningMotorGearRatio = 1 / 12.1;
         public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
         public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
         public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
@@ -20,9 +20,9 @@ public final class Constants {
 
     public static final class DriveConstants {
 
-        public static final double kTrackWidth = 0.525;
+        public static final double kTrackWidth = Units.inchesToMeters(25);
         // Distance between right and left wheels
-        public static final double kWheelBase = 0.575;
+        public static final double kWheelBase = Units.inchesToMeters(29.5);
         // Distance between front and back wheels
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -31,15 +31,15 @@ public final class Constants {
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         // ---motorports---
-        public static final int kFrontLeftDriveMotorPort = 22;
-        public static final int kBackLeftDriveMotorPort = 23;
-        public static final int kFrontRightDriveMotorPort = 21;
-        public static final int kBackRightDriveMotorPort = 24;
+        public static final int kFrontLeftDriveMotorPort = 11;
+        public static final int kBackLeftDriveMotorPort = 14;
+        public static final int kFrontRightDriveMotorPort = 12;
+        public static final int kBackRightDriveMotorPort = 13;
 
-        public static final int kFrontLeftTurningMotorPort = 32;
-        public static final int kBackLeftTurningMotorPort = 33;
-        public static final int kFrontRightTurningMotorPort = 31;
-        public static final int kBackRightTurningMotorPort = 34;
+        public static final int kFrontLeftTurningMotorPort = 21;
+        public static final int kBackLeftTurningMotorPort = 24;
+        public static final int kFrontRightTurningMotorPort = 22;
+        public static final int kBackRightTurningMotorPort = 23;
 
         public static final boolean kFrontLeftTurningEncoderReversed = true;
         public static final boolean kBackLeftTurningEncoderReversed = true;
@@ -53,10 +53,10 @@ public final class Constants {
 
         // ---CANcoder Ports---
 
-        public static final int kFrontLeftDriveAbsoluteEncoderPort = 42;
-        public static final int kBackLeftDriveAbsoluteEncoderPort = 43;
-        public static final int kFrontRightDriveAbsoluteEncoderPort = 41;
-        public static final int kBackRightDriveAbsoluteEncoderPort = 44;
+        public static final int kFrontLeftDriveAbsoluteEncoderPort = 41;
+        public static final int kBackLeftDriveAbsoluteEncoderPort = 44;
+        public static final int kFrontRightDriveAbsoluteEncoderPort = 42;
+        public static final int kBackRightDriveAbsoluteEncoderPort = 43;
 
         public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackLeftDriveAbsoluteEncoderReversed = false;
@@ -66,10 +66,10 @@ public final class Constants {
         // Caso essas constantes estejam mal calibradas, zere-as, coloque as rodas da swerve no zero, veja o numero que deu na smart dashboard
         // Apos isso, coloque aa swerve full pra frente (preferencialmente desreferenciada) e coloque a diferenca dos valores ai
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0.1;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 0.05;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -0.2;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 0.0;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 0.0;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.0;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.0;
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 4 ;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
