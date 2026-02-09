@@ -92,7 +92,7 @@ public class SwerveSubsystem extends SubsystemBase {
                               (speeds, feedforward) -> driveRobotRelative(speeds),  
                               new PPHolonomicDriveController( // PathPlanner`s lib for controlling drivetrains
                               new PIDConstants(1.0, 0.0, 0.0), 
-                              new PIDConstants(1.0, 0.0, 0.0)),
+                              new PIDConstants(0.5, 0.0, 0.0)),
                               config ,
                               () -> {
                                 var alliance = DriverStation.getAlliance();
@@ -118,7 +118,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(getHeading());
+        return pigeon.getRotation2d();
     }
 
 

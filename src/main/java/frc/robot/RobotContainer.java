@@ -19,11 +19,11 @@ public class RobotContainer {
   private final Joystick controller = new Joystick(0);
   private final PS5Controller buttonController = new PS5Controller(0);
   public RobotContainer() {
-    Supplier<Double> axisZero = () -> this.controller.getRawAxis(0);
-    Supplier<Double> axisOne = () -> this.controller.getRawAxis(1);
+    Supplier<Double> axisZero = () -> this.controller.getRawAxis(1);
+    Supplier<Double> axisOne = () -> this.controller.getRawAxis(0);
     Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
     Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
-    Supplier<Boolean> rotSup = () -> this.buttonController.getTouchpadButton();
+    Supplier<Boolean> rotSup = () -> this.buttonController.getTouchpadButtonPressed();
 
     swerve.setDefaultCommand(new SwerveCommand(
       this.swerve,

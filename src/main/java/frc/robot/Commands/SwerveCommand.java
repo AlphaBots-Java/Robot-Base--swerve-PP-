@@ -1,11 +1,13 @@
 package frc.robot.Commands;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -54,12 +56,16 @@ public class SwerveCommand extends Command {
         }
         else if (rotationButton.get()){
             double RotNow = swerveSubsystem.getHeading();
-            while(swerveSubsystem.getHeading() <= RotNow +5 || swerveSubsystem.getHeading() >= RotNow + 5){
-                PIDController pid = new PIDController(0.01,0,0);
-                turningSpeed = pid.calculate(swerveSubsystem.getHeading(), 90);
-            }
             xSpeed = 0;
             ySpeed = 0;
+            while(swerveSubsystem.getHeading() <= RotNow +90 + 3 && swerveSubsystem.getHeading() >= RotNow +90 - 3){
+                PIDController pid = new PIDController(0.01,0,0);
+                turningSpeed = MathUtil.clamp(pid.calculate(-swerveSubsystem.getHeading(), RotNow +90), -0.3, 0.3);
+                SmartDashboard.putNumber("Robot Heading", swerveSubsystem.getHeading());
+                SmartDashboard.putNumber("Turning setpoint", RotNow + 90);
+
+                OutputToWheels(xSpeed, ySpeed, turningSpeed);
+            }
             turningSpeed=0;
             
         }
@@ -69,22 +75,26 @@ public class SwerveCommand extends Command {
             turningSpeed = turningSpdFunction.get();
         }
 
-        // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed : 0.0;
-        turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed : 0.0;
+        OutputToWheels(xSpeed, ySpeed, turningSpeed);
+    }
+
+    public void OutputToWheels(double xspd, double yspd, double turningspd){
+                // 2. Apply deadband
+        xspd = Math.abs(xspd) > OIConstants.kDeadband ? xspd : 0.0;
+        yspd = Math.abs(yspd) > OIConstants.kDeadband ? yspd : 0.0;
+        turningspd = Math.abs(turningspd) > OIConstants.kDeadband ? turningspd : 0.0;
 
         // 3. Make the driving smoother
-        xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-        turningSpeed = turningLimiter.calculate(turningSpeed)
+        xspd = xLimiter.calculate(xspd) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        yspd = yLimiter.calculate(yspd) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
+        turningspd = turningLimiter.calculate(turningspd)
                 * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
         // if (fieldOrientedFunction.get()) {
             // Relative to field
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xSpeed, -ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xspd, yspd, turningspd, swerveSubsystem.getRotation2d());
         // } else {
         //     // Relative to robot
         //     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xSpeed, -ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
