@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,9 +20,10 @@ public class RobotContainer {
   private final SwerveSubsystem swerve = new SwerveSubsystem();
   private final Joystick controller = new Joystick(0);
   private final PS5Controller buttonController = new PS5Controller(0);
+  ;
   public RobotContainer() {
-    Supplier<Double> axisZero = () -> this.controller.getRawAxis(1);
-    Supplier<Double> axisOne = () -> this.controller.getRawAxis(0);
+    Supplier<Double> axisZero = () -> -this.controller.getRawAxis(1);
+    Supplier<Double> axisOne = () -> -this.controller.getRawAxis(0);
     Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
     Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
     Supplier<Boolean> rotSup = () -> this.buttonController.getTouchpadButtonPressed();
@@ -41,7 +44,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Example Auto");
+
+    swerve.zeroHeading();
+
+    return new PathPlannerAuto("bumpLowBar");
   }
   
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.AutoConstants;
 
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -78,9 +79,13 @@ public class SwerveSubsystem extends SubsystemBase {
         }).start();
 
 
-        RobotConfig config;
-        try{
-        config = RobotConfig.fromGUISettings();
+    RobotConfig config;
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load PathPlanner RobotConfig!", e.getStackTrace());
+            throw new RuntimeException("PathPlanner config failed to load", e);
+        }
         
     
         AutoBuilder.configure(this::getPose,
@@ -91,20 +96,21 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                               backRight.getState()), 
                               (speeds, feedforward) -> driveRobotRelative(speeds),  
                               new PPHolonomicDriveController( // PathPlanner`s lib for controlling drivetrains
-                              new PIDConstants(0.8, 0.0, 0.0), 
-                              new PIDConstants(0.2, 0.0, 0.1)),
+                              new PIDConstants(AutoConstants.kPXController, 0.0, 0.0), 
+                              new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.15)),
                               config ,
                               () -> {
-                                var alliance = DriverStation.getAlliance();
-                                if (alliance.isPresent()) {
-                                    return alliance.get() == DriverStation.Alliance.Red;
-                                }
+                                // var alliance = DriverStation.getAlliance();
+                                // if (alliance.isPresent()) {
+                                //     SmartDashboard.putBoolean("inverted",  alliance.get() == DriverStation.Alliance.Red);
+                                //     return alliance.get() == DriverStation.Alliance.Red;
+                                // }
                                 return false;
                               },
                               this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
     }
 
     public void zeroHeading() {

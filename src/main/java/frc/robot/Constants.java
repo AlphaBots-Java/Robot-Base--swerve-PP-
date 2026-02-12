@@ -48,10 +48,10 @@ public final class Constants {
         public static final InvertedValue kFrontRightTurningEncoderReversed = InvertedValue.Clockwise_Positive;
         public static final InvertedValue kBackRightTurningEncoderReversed = InvertedValue.Clockwise_Positive;
 
-        public static final InvertedValue kFrontLeftDriveEncoderReversed = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue kBackLeftDriveEncoderReversed = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue kFrontRightDriveEncoderReversed = InvertedValue.Clockwise_Positive;
-        public static final InvertedValue kBackRightDriveEncoderReversed = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kFrontLeftDriveEncoderReversed = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kBackLeftDriveEncoderReversed = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kFrontRightDriveEncoderReversed = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kBackRightDriveEncoderReversed = InvertedValue.CounterClockwise_Positive;
 
         // ---CANcoder Ports---
 
@@ -91,7 +91,7 @@ public final class Constants {
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;
         public static final double kPXController = 1.5;
         public static final double kPYController = 1.5;
-        public static final double kPThetaController = 1;
+        public static final double kPThetaController = 0.5;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = 
                 new TrapezoidProfile.Constraints(

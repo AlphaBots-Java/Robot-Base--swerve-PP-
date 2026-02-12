@@ -64,7 +64,7 @@ public class SwerveCommand extends Command {
                 SmartDashboard.putNumber("Robot Heading", swerveSubsystem.getHeading());
                 SmartDashboard.putNumber("Turning setpoint", RotNow + 90);
 
-                OutputToWheels(xSpeed, ySpeed, turningSpeed);
+                OutputToWheels(xSpeed, ySpeed, -turningSpeed);
             }
             turningSpeed=0;
             
@@ -72,7 +72,7 @@ public class SwerveCommand extends Command {
         else{
             xSpeed = xSpdFunction.get();
             ySpeed = ySpdFunction.get();
-            turningSpeed = turningSpdFunction.get();
+            turningSpeed = -turningSpdFunction.get();
         }
 
         OutputToWheels(xSpeed, ySpeed, turningSpeed);
