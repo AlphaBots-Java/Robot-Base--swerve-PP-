@@ -1,16 +1,16 @@
 package frc.robot.Subsystems;
 
-import edu.wpi.first.math.util.Units;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimeLightSubsystem {
+    public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-dir");
 
     public static double DistanceToTarget()
     {
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-dir");
         NetworkTableEntry ty = table.getEntry("ty");
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);
 
@@ -31,6 +31,8 @@ public class LimeLightSubsystem {
         //calculate distance
         return (goalHeightCM - limelightLensHeightCM) / Math.tan(angleToGoalRadians);
     }
+
+
 
 
 }

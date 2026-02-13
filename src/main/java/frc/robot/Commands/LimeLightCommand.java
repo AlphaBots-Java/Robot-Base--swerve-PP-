@@ -1,4 +1,5 @@
 package frc.robot.Commands;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -6,68 +7,71 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.LimeLightSubsystem;
 import frc.robot.Subsystems.SwerveSubsystem;
 
-public class SwerveCommand extends Command {
-
-    private SwerveSubsystem swerveSubsystem;
-    private Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private Supplier<Boolean> fieldOrientedFunction;
+public class LimeLightCommand extends Command{
+    LimeLightSubsystem limeLightSubsystem = new LimeLightSubsystem();
+    SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    public PIDController pid = new PIDController(0.03, 0, 0.0);
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-    private Supplier<Boolean> rotationButton;
+    private Supplier<Double> xSpdFunction, ySpdFunction;
+    private Supplier<Boolean> endAimSup;
+    boolean canGoBack;
 
-    private PS5Controller controller = new PS5Controller(0);
 
-    public SwerveCommand(SwerveSubsystem swerveSubsystem,
-            Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> rotationButton) {
-        this.swerveSubsystem = swerveSubsystem;
+    
+
+    public LimeLightCommand(Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction,Supplier<Boolean> endAim, LimeLightSubsystem limelight, SwerveSubsystem swerve){
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
-        this.turningSpdFunction = turningSpdFunction;
-        this.fieldOrientedFunction = fieldOrientedFunction;
+        this.endAimSup = endAim;
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
+        limeLightSubsystem = limelight;
+        swerveSubsystem = swerve;
         this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-        this.rotationButton = rotationButton;
+
         addRequirements(swerveSubsystem);
     }
 
     @Override
     public void initialize() {
+        canGoBack = false;
     }
 
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
+        NetworkTableEntry tx = LimeLightSubsystem.table.getEntry("tx");
+        double aligningMaxSpd = 0.17;
+        
+
+        double correctRotation = MathUtil.clamp(pid.calculate(tx.getDouble(0.0), 0), -aligningMaxSpd, aligningMaxSpd);
+
+        SmartDashboard.putNumber("tx", correctRotation);
+
+
         double xSpeed;
         double ySpeed;
-        double turningSpeed ;
-        if (controller.getPSButton()){
+        xSpeed = xSpdFunction.get();
+        ySpeed = ySpdFunction.get();
 
-            xSpeed = 0;
-            ySpeed = -0.1;
-            turningSpeed = turningSpdFunction.get();
-        }
-        else{
-            xSpeed = xSpdFunction.get();
-            ySpeed = ySpdFunction.get();
-            turningSpeed = -turningSpdFunction.get();
-        }
 
-        OutputToWheels(xSpeed, ySpeed, turningSpeed);
+        OutputToWheels(xSpeed, ySpeed, correctRotation);
     }
 
-    public void OutputToWheels(double xspd, double yspd, double turningspd){
-                // 2. Apply deadband
+    public void OutputToWheels(double xspd, double yspd,double turningspd){
+        // 2. Apply deadband
+        turningspd = Math.abs(turningspd) > AutoConstants.kAngleDeadband ? turningspd : 0.0;
         xspd = Math.abs(xspd) > OIConstants.kDeadband ? xspd : 0.0;
         yspd = Math.abs(yspd) > OIConstants.kDeadband ? yspd : 0.0;
-        turningspd = Math.abs(turningspd) > OIConstants.kDeadband ? turningspd : 0.0;
 
         // 3. Make the driving smoother
         xspd = xLimiter.calculate(xspd) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
@@ -77,20 +81,8 @@ public class SwerveCommand extends Command {
 
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
-        // if (fieldOrientedFunction.get()) {
-            // Relative to field
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xspd, yspd, turningspd, swerveSubsystem.getRotation2d());
-        // } else {
-        //     // Relative to robot
-        //     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xSpeed, -ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-       
-        // }
 
-        if (fieldOrientedFunction.get()){
-            swerveSubsystem.zeroHeading();
-        }
-
-        
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds( xspd, yspd, turningspd, swerveSubsystem.getRotation2d());
 
         // 5. Convert chassis speeds to individual module states
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -106,6 +98,18 @@ public class SwerveCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+                canGoBack = true;
+            } catch (Exception e) {
+            }
+        }).start();
+        if(endAimSup.get() == true && canGoBack){
+            return true;
+        }else{
+            return false;
+        }
     }
+
 }

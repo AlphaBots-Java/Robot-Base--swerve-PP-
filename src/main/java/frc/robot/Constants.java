@@ -92,6 +92,7 @@ public final class Constants {
         public static final double kPXController = 1.5;
         public static final double kPYController = 1.5;
         public static final double kPThetaController = 0.5;
+        public static final double kAngleDeadband = 0.05;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = 
                 new TrapezoidProfile.Constraints(
