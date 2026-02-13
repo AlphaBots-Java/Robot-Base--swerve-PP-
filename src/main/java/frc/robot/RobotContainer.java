@@ -47,7 +47,7 @@ public class RobotContainer {
 
     swerve.zeroHeading();
 
-    return new PathPlannerAuto("bumpLowBar");
+    return new PathPlannerAuto("Example Auto");
   }
   
 }
