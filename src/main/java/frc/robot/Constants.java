@@ -73,7 +73,7 @@ public final class Constants {
         public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.0;
         public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 0.0;
 
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 4 ;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = 5.614;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
         public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond/2;
@@ -109,5 +109,15 @@ public final class Constants {
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.05;
+    }
+
+    public static final class ShooterConstants{
+        public static final double kCapStep = 0.0; // angle generated for each axis spin
+        // we don`t know the above yet
+
+        public static final double CapMotorGearRatio = 100;
+
+        public static final double kShooterLowSpeedRPM = 50;
+        public static final double kShooterHighSpeedRPM = 100;
     }
 }

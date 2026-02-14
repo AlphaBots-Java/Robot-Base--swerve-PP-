@@ -46,11 +46,6 @@ public class LimeLightCommandAuto extends Command{
 
         SmartDashboard.putNumber("tx", correctRotation);
 
-
-        double xSpeed;
-        double ySpeed;
-
-
         OutputToWheels(correctRotation);
     }
 

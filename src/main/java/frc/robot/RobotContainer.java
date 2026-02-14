@@ -9,10 +9,10 @@ import java.util.function.Supplier;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.Joystick.ButtonType;
+// import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -35,7 +35,6 @@ public class RobotContainer {
     Supplier<Double> axisOne = () -> -this.controller.getRawAxis(0);
     Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
     Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
-    Supplier<Boolean> rotSup = () -> this.buttonController.getTouchpadButtonPressed();
     Supplier<Boolean> endAimSupplier = () -> this.buttonController.getR1ButtonPressed();
 
 
@@ -45,8 +44,7 @@ public class RobotContainer {
       axisZero,
       axisOne,
       axisTwo,
-      buttonSup,
-      rotSup
+      buttonSup
     ));
 
     button1.onTrue(new LimeLightCommand(axisZero,
@@ -58,9 +56,9 @@ public class RobotContainer {
 
   }
 
-  private void configureBindings() {
+  // private void configureBindings() {
     
-  }
+  // }
 
   public Command getAutonomousCommand() {
 

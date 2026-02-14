@@ -3,11 +3,6 @@ package frc.robot.Subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
-import java.util.MissingFormatWidthException;
-
-import javax.sound.midi.Soundbank;
-
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
