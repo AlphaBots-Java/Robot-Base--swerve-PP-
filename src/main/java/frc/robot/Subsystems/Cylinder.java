@@ -23,8 +23,8 @@ public class Cylinder extends SubsystemBase {
         accelConfigs.Slot0.kP = 0.11; // An error of 1 rps results in 0.11 V output
         accelConfigs.Slot0.kI = 0; // no output for integrated error
         accelConfigs.Slot0.kD = 0; // no output for error derivative
-        // 0.01534*rpm Velocidade da bola
-        // 0.00266*rpm velocidade do acelerador
+        // 0.01534*rpm Velocidade da bola 
+        // 0.00266*rpm velocidade do acelerador m/s
 
 
         cylinderKraken.getConfigurator().apply(accelConfigs);   
@@ -34,11 +34,11 @@ public class Cylinder extends SubsystemBase {
     
     public void applyVelocity(double SpeedRPS, double Kg){
 
-        double ballVelocityRPM = 0.01534 * getCylinderVelocityRPM();
-        double accelVelocityRPM = 0.00266 * Accelerator.getAcceleratorVelocityRPM();
-        double shooterVelocityRPM = 0.00266 * ShooterSubsystem.getShooterVelocityRPM();
+        double ballVelocity = 0.01534 * getCylinderVelocityRPM();
+        double accelVelocity = 0.00266 * Accelerator.getAcceleratorVelocityRPM();
+        double shooterVelocity = 0.00266 * ShooterSubsystem.getShooterVelocityRPM();
 
-        boolean canShoot = ballVelocityRPM > accelVelocityRPM - AcceleratorSpeedMargin && ballVelocityRPM > shooterVelocityRPM - ShooterSpeedMargin;
+        boolean canShoot = ballVelocity > accelVelocity - AcceleratorSpeedMargin && ballVelocity > shooterVelocity - ShooterSpeedMargin;
 
         if(canShoot){
             cylinderKraken.setControl(m_request.withVelocity(SpeedRPS).withFeedForward(Kg));

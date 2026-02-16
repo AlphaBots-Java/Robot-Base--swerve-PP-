@@ -119,5 +119,7 @@ public final class Constants {
 
         public static final double kShooterLowSpeedRPM = 50;
         public static final double kShooterHighSpeedRPM = 100;
+
+        public static final double kDistanceForHighSpeedMeters = 2;
     }
 }

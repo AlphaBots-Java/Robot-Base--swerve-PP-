@@ -18,13 +18,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.LimeLightCommand;
 import frc.robot.Commands.LimeLightCommandAuto;
+import frc.robot.Commands.ShooterCommand;
 import frc.robot.Commands.SwerveCommand;
 import frc.robot.Subsystems.LimeLightSubsystem;
+import frc.robot.Subsystems.ShooterSubsystem;
 import frc.robot.Subsystems.SwerveSubsystem;
 
 public class RobotContainer {
   private final LimeLightSubsystem limelight = new LimeLightSubsystem();
   private final SwerveSubsystem swerve = new SwerveSubsystem();
+  private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final Joystick controller = new Joystick(0);
   private final PS5Controller buttonController = new PS5Controller(0);
   private final Trigger button1 = new JoystickButton(controller, 6);
@@ -36,6 +39,7 @@ public class RobotContainer {
     Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
     Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
     Supplier<Boolean> endAimSupplier = () -> this.buttonController.getR1ButtonPressed();
+    Supplier<Boolean> ShooterSupplier = () -> this.buttonController.getL1ButtonPressed();
 
 
     NamedCommands.registerCommand("LimeLight-Oriented", new LimeLightCommandAuto(limelight, swerve));
@@ -52,7 +56,9 @@ public class RobotContainer {
                                         endAimSupplier,
                                         limelight, 
                                         swerve));
+    
 
+    shooter.setDefaultCommand(new ShooterCommand(shooter, ShooterSupplier));
 
   }
 
