@@ -35,10 +35,10 @@ public class Cylinder extends SubsystemBase {
     public void applyVelocity(double SpeedRPS, double Kg){
 
         double ballVelocity = 0.01534 * getCylinderVelocityRPM();
-        double accelVelocity = 0.00266 * Accelerator.getAcceleratorVelocityRPM();
-        double shooterVelocity = 0.00266 * ShooterSubsystem.getShooterVelocityRPM();
+        double accelVelocity = 0.00266 * AcceleratorSpeedMargin;
+        double shooterVelocity = 0.00266 * ShooterSpeedMargin;
 
-        boolean canShoot = ballVelocity > accelVelocity - AcceleratorSpeedMargin && ballVelocity > shooterVelocity - ShooterSpeedMargin;
+        boolean canShoot = ballVelocity > accelVelocity && ballVelocity > shooterVelocity;
 
         if(canShoot){
             cylinderKraken.setControl(m_request.withVelocity(SpeedRPS).withFeedForward(Kg));
@@ -52,6 +52,4 @@ public class Cylinder extends SubsystemBase {
     public double getCylinderVelocityRPM(){
         return cylinderKraken.getVelocity().getValueAsDouble() * 60;
     }
-
-
 }

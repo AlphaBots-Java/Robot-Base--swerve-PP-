@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class CatcherSubsystem extends SubsystemBase{
     private final TalonFX krakenAngler = new TalonFX(0, "canBUS");
@@ -13,11 +14,11 @@ public class CatcherSubsystem extends SubsystemBase{
 
     private PIDController catcherController = new PIDController(0, 0, 0);
 
-    public void setCatcherAnglerDegrees(double setPoint){
-        krakenAngler.setVoltage(catcherController.calculate(catcherCANcoder.getPosition().getValueAsDouble() * 360 ,setPoint));
+    public void setCatcherExtenderMM(double setPoint){
+        krakenAngler.setVoltage(catcherController.calculate(catcherCANcoder.getPosition().getValueAsDouble() * ShooterConstants.kCatcherRotationsToMM ,setPoint));
     }
 
-    public void setCatcherVelocity(){
-        krakenCatcher.set(0.5);
+    public void setCatcherVelocity(Double CatcherSpeed){
+        krakenCatcher.set(CatcherSpeed);
     }
 }

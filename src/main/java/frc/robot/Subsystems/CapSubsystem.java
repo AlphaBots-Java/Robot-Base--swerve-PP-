@@ -5,9 +5,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
-public class CapSubsystem {
+public class CapSubsystem extends SubsystemBase{
     private final TalonFX capKraken44 = new TalonFX(0, "canBUS");
     private final CANcoder capThroughBourne = new CANcoder(1, "canBUS");
 
