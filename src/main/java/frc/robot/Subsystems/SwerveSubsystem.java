@@ -155,6 +155,11 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("angle2", frontRight.getAbsoluteEncoderDeg());
         SmartDashboard.putNumber("angle3", backRight.getAbsoluteEncoderDeg());
 
+        SmartDashboard.putNumber("velocity0", frontLeft.getDriveVelocity());
+        SmartDashboard.putNumber("velocity1", backLeft.getDriveVelocity());
+        SmartDashboard.putNumber("velocity2", frontRight.getDriveVelocity());
+        SmartDashboard.putNumber("velocity3", backRight.getDriveVelocity());
+
         SmartDashboard.putNumber("Limelight-Distance-toTarget", LimeLightSubsystem.DistanceToTarget());
     }
 

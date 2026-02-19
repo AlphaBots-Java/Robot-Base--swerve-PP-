@@ -5,6 +5,9 @@ import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -14,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 
@@ -25,7 +27,7 @@ public class SwerveModule {
     private final TalonFX turningMotor;
   
     private final PIDController turningPidController;
-    
+    public TalonFXConfiguration configs = new TalonFXConfiguration();
     
     private final CANcoder absoluteEncoder;
     private final boolean absoluteEncoderReversed;
@@ -67,6 +69,15 @@ public class SwerveModule {
         if (!status.isOK()) {
             System.out.println("Failed to load music: " + status.toString());
         }
+
+
+        configs.Feedback.SensorToMechanismRatio = 1.0;
+
+        configs.Slot0.kP = 0.2; // An error of 1 rps results in 0.11 V output
+        configs.Slot0.kI = 0; // no output for integrated error
+        configs.Slot0.kD = 0; // no output for error derivative
+
+        driveMotor.getConfigurator().apply(configs);
     }
 
     
@@ -109,6 +120,7 @@ public class SwerveModule {
     public Rotation2d getRotation2d() {
         return new Rotation2d(getAbsoluteEncoderRad());
     }
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
     public void setDesiredState(SwerveModuleState state, Rotation2d rotation2d) {
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
@@ -120,7 +132,8 @@ public class SwerveModule {
 
         state.optimize(rotation2d);
         
-        driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        // driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        driveMotor.setControl(m_request.withVelocity(state.speedMetersPerSecond * (1/ModuleConstants.kDriveEncoderRot2Meter)));
         turningMotor.set(turningPidController.calculate(getAbsoluteEncoderRad(), state.angle.getRadians() - absoluteEncoderOffsetRad));
         SmartDashboard.putString("Swerve[" + absoluteEncoder.getDeviceID() + "] state", state.toString());
     }
