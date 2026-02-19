@@ -177,4 +177,13 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(Mspeeds);
         this.setModuleStates(moduleStates);
     }
+
+    
+    public void playInstruments(){
+        frontLeft.orchestra.play();
+        frontRight.orchestra.play();
+        backLeft.orchestra.play();
+        backRight.orchestra.play();
+    }
+    
 }

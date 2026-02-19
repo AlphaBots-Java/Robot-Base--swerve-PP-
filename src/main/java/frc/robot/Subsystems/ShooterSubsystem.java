@@ -38,5 +38,5 @@ public class ShooterSubsystem extends SubsystemBase{
     public static double getShooterVelocityRPM(){
         return shooterKraken1.getVelocity().getValueAsDouble() * 60;
     }
-    
+
 }

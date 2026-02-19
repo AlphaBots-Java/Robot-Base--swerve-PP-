@@ -3,6 +3,7 @@ package frc.robot.Subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -25,9 +26,13 @@ public class SwerveModule {
   
     private final PIDController turningPidController;
     
+    
     private final CANcoder absoluteEncoder;
     private final boolean absoluteEncoderReversed;
     private final double absoluteEncoderOffsetRad;
+
+    public Orchestra orchestra = new Orchestra();
+
 
     public SwerveModule(int driveMotorId, int turningMotorId, InvertedValue driveMotorReversed, InvertedValue turningMotorReversed,
             int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -54,11 +59,14 @@ public class SwerveModule {
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
      
-        // Orchestra orchestra = new Orchestra();
 
-        // orchestra.addInstrument(driveMotor);
-        // orchestra.loadMusic('./MarioSound.mp3');
-           
+        orchestra.addInstrument(driveMotor);
+        
+        // Files in src/main/deploy are found in the "deploy" folder on the RoboRIO
+        var status = orchestra.loadMusic("deploy/up.chrp");
+        if (!status.isOK()) {
+            System.out.println("Failed to load music: " + status.toString());
+        }
     }
 
     

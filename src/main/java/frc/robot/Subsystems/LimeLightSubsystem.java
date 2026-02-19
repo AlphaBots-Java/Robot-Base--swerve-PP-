@@ -26,8 +26,6 @@ public class LimeLightSubsystem {
         double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
         SmartDashboard.putNumber("ty", Math.tan(angleToGoalRadians));
 
-
-
         //calculate distance
         return (goalHeightCM - limelightLensHeightCM) / Math.tan(angleToGoalRadians);
     }

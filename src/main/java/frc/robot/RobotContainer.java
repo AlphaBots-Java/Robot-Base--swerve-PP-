@@ -1,22 +1,16 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
-// import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.AcceleratorCommand;
@@ -38,10 +32,10 @@ import frc.robot.Subsystems.SwerveSubsystem;
 public class RobotContainer {
   private final LimeLightSubsystem limelight = new LimeLightSubsystem();
   private final SwerveSubsystem swerve = new SwerveSubsystem();
-  private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final Joystick controller = new Joystick(0);
   private final PS5Controller buttonController = new PS5Controller(0);
   private final Trigger button1 = new JoystickButton(controller, 6);
+  private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final CapSubsystem cap = new CapSubsystem();
   private final Cylinder cylinder = new Cylinder();
   private final Accelerator accelerator = new Accelerator();
@@ -88,6 +82,9 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    // Tocar musica ao apertar o Quadrado (Square)
+    new Trigger(buttonController::getSquareButton).onTrue(new InstantCommand(() -> swerve.playInstruments()));
   }
 
   // private void configureBindings() {
@@ -95,9 +92,7 @@ public class RobotContainer {
   // }
 
   public Command getAutonomousCommand() {
-
     swerve.zeroHeading();
-
     return autoChooser.getSelected();
   }
   
