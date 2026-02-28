@@ -1,9 +1,9 @@
 
-# FRC Robot Project Documentation
+# FRC 1860 Robot Project Documentation
 
 ## 1. Overview Section
 
-**Purpose:** This software project provides the comprehensive control architecture for a FIRST Robotics Competition (FRC) robot. It operates a Kraken/TalonFX-powered swerve drive, a vision-aligned shooting superstructure, and autonomous path-following capabilities using PathPlanner.
+**Purpose:** This software project provides the comprehensive control architecture for 1860 robot. It operates a Kraken/TalonFX-powered swerve drive, a vision-aligned shooting superstructure, and autonomous path-following capabilities using PathPlanner.
 
 **Key Features:**
 
