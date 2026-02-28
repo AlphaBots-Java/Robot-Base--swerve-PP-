@@ -77,7 +77,7 @@ public static double DistanceToTarget()
 
 ```
 
-> **Behavior Note:** [Inference] This method calculates distance using the `ty` (vertical offset) angle from the Limelight and predefined mount heights. This is expected behavior, not guaranteed, as an obstructed camera or uncalibrated crosshair will yield inaccurate data.
+> **Behavior Note:** This method calculates distance using the `ty` (vertical offset) angle from the Limelight and predefined mount heights. This is expected behavior, not guaranteed, as an obstructed camera or uncalibrated crosshair will yield inaccurate data.
 
 ```java
 /**
@@ -92,7 +92,7 @@ public boolean CanShoot()
 
 ```
 
-> **Behavior Note:** [Inference] This aims to avoid jamming the mechanism by verifying the shooter spins faster than the accelerator. This is expected behavior, not guaranteed, as physical friction or voltage drops can still cause jams.
+> **Behavior Note:** This aims to avoid jamming the mechanism by verifying the shooter spins faster than the accelerator. This is expected behavior, not guaranteed, as physical friction or voltage drops can still cause jams.
 
 ```java
 /**
@@ -149,7 +149,7 @@ button1.onTrue(new LimeLightCommand(
 
 ```
 
-> **Behavior Note:** [Inference] When the button is pressed, the robot is designed to snap its rotation to center the vision target while still sliding sideways or forward based on stick input. This is expected behavior, not guaranteed, as it relies on proper PID tuning in `LimeLightCommand`.
+> **Behavior Note:** When the button is pressed, the robot is designed to snap its rotation to center the vision target while still sliding sideways or forward based on stick input. This is expected behavior, not guaranteed, as it relies on proper PID tuning in `LimeLightCommand`.
 
 ### Example 3: Error Handling and Safety Gates
 
@@ -198,7 +198,7 @@ public class CapCommand extends Command{
 
     /**
      * Calculates the required hood angle based on projectile physics.
-     * [Inference] This relies on a simplified kinematic model where time to target 
+     * This relies on a simplified kinematic model where time to target 
      * is approximated by a constant '4', and velocity is derived from RPM.
      * This is expected behavior, not guaranteed to hit the target if air resistance is high.
      */
