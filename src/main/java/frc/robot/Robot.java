@@ -9,18 +9,38 @@ package frc.robot;
 
 import com.ctre.phoenix6.Orchestra;
 
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.Subsystems.Accelerator;
+import frc.robot.Subsystems.CandleSubsystem;
+import frc.robot.Subsystems.CapSubsystem;
+import frc.robot.Subsystems.Cylinder;
+import frc.robot.Subsystems.ShooterSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  // ShooterSubsystem shooter = new ShooterSubsystem();
+  // Cylinder cylinder = new Cylinder();
+  // Accelerator accel = new Accelerator();
+  // CapSubsystem cap = new CapSubsystem();
+  // PS5Controller ps = new PS5Controller(0);
+  CandleSubsystem CANdle = new CandleSubsystem();
 
   private final RobotContainer m_robotContainer;
   
   public Robot() {
     m_robotContainer = new RobotContainer();
+  }
+
+  @Override
+  public void robotInit() {
+    CANdle.setRainbow();// Run rainbow for 5 seconds on boot to signal initialization
   }
 
   @Override
@@ -47,6 +67,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    CANdle.setBlinkBlue();
   }
 
   @Override
@@ -54,7 +75,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    CANdle.stop();
+  }
 
   Orchestra m_Orchestra = new Orchestra();
 
@@ -63,11 +86,31 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
+    // Vibra o controle ao iniciar o Teleop
   
 }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // if(ps.getL2Button()){
+    //   cylinder.applyVelocity(778, 0);
+    //   accel.applyVelocity(1559, 0);
+    //   shooter.applyVelocity(1000, 0);
+    // }else{
+    //   shooter.applyVelocity(0, 0);
+    //   cylinder.applyVelocity(0, 0);
+    //   accel.applyVelocity(0, 0);
+    // }
+    // if(ps.getTriangleButton()){
+    //   cap.setAngleDegrees(-7);
+    // }else{
+    //   cap.setAngleDegrees(0);
+    // }
+    // shooter.DebugShooter();
+    // accel.DebugAccel();
+    // cylinder.DebugCylinder();
+  }
 
   @Override
   public void teleopExit() {}

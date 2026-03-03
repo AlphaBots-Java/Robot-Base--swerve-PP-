@@ -41,10 +41,10 @@ public class SwerveModule {
 
         this.absoluteEncoderOffsetRad = absoluteEncoderOffset;
         this.absoluteEncoderReversed = absoluteEncoderReversed;
-        absoluteEncoder = new CANcoder(absoluteEncoderId, "SwerveCAN");
+        absoluteEncoder = new CANcoder(absoluteEncoderId);
 
-        driveMotor = new TalonFX(driveMotorId, "SwerveCAN");
-        turningMotor = new TalonFX(turningMotorId, "SwerveCAN");
+        driveMotor = new TalonFX(driveMotorId);
+        turningMotor = new TalonFX(turningMotorId);
 
         MotorOutputConfigs driverMotorConfigs = new MotorOutputConfigs();
         MotorOutputConfigs turningMotorConfigs = new MotorOutputConfigs();
@@ -63,12 +63,7 @@ public class SwerveModule {
      
 
         orchestra.addInstrument(driveMotor);
-        
-        // Files in src/main/deploy are found in the "deploy" folder on the RoboRIO
-        var status = orchestra.loadMusic("deploy/up.chrp");
-        if (!status.isOK()) {
-            System.out.println("Failed to load music: " + status.toString());
-        }
+
 
 
         configs.Feedback.SensorToMechanismRatio = 1.0;

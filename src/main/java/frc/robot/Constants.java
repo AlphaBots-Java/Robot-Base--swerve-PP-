@@ -112,18 +112,25 @@ public final class Constants {
     }
 
     public static final class ShooterConstants{
-        public static final double kCapStep = 0.0; // angle generated for each axis spin
+        public static final double kCapStep = 360/21; // angle generated for each axis spin
         // we don`t know the above yet
 
         public static final double CapMotorGearRatio = 100;
 
-        public static final double kShooterLowSpeedRPM = 50;
-        public static final double kShooterHighSpeedRPM = 100;
-        public static final double kCylinderSpeedRPM = 4;
+        public static final double kShooterLowSpeedRPM = 10;
+        public static final double kShooterHighSpeedRPM = 10;
+        
+        public static final double kCylinderMultiplierRPM = 0.8;
+        public static final double kAcceleratorMultiplierRPM = 0.8;
 
         public static final double kDistanceForHighSpeedMeters = 2;
 
         public static final double kCatcherRotationsToMM = 90; //definir
         public static final double kCatcherMaxExtensionMM = 80;
+    }
+
+    public static final class CandleConstants {
+        public static final int kCandleId = 1; // Set this to your actual CANdle ID
+        public static final int kLedCount = 8;  // Set this to the number of LEDs in your strip
     }
 }

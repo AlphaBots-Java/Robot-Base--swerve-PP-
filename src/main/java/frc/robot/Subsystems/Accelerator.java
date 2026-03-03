@@ -3,33 +3,60 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class Accelerator extends SubsystemBase{
-    private static TalonFX acceleratorKraken = new TalonFX(0, "canBUS");
-    private final TalonFXConfiguration accelConfigs = new TalonFXConfiguration();
+    private static TalonFX acceleratorKraken = new TalonFX(33, "ShooterCAN");
+    private final PIDController pid = new PIDController(0.05, 0, 0);
+    double velocityOutput = 0;
+    Boolean isShooting = false;
 
     public Accelerator(){
-        accelConfigs.Feedback.SensorToMechanismRatio = 3/4;
-
-        accelConfigs.Slot0.kS = 0.1; // Add 0.1 V output to overcome static friction
-        accelConfigs.Slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        accelConfigs.Slot0.kP = 0.11; // An error of 1 rps results in 0.11 V output
-        accelConfigs.Slot0.kI = 0; // no output for integrated error
-        accelConfigs.Slot0.kD = 0; // no output for error derivative
-
-
-        acceleratorKraken.getConfigurator().apply(accelConfigs);   
+        velocityOutput = 0;
+        isShooting = false;
     }
-
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
     
-    public void applyVelocity(double SpeedRPS, double Kg){
-        acceleratorKraken.setControl(m_request.withVelocity(SpeedRPS).withFeedForward(Kg));
+    public void applyVelocity(double SpeedRPM, double Kg){
+        velocityOutput += pid.calculate(acceleratorKraken.getVelocity().getValueAsDouble(), -SpeedRPM / 60 * (24/18));
+        acceleratorKraken.setVoltage(velocityOutput);
+        SmartDashboard.putNumber("Accelerator SetPoint", SpeedRPM * (24/18));
     }
 
+    public void applyVelocityMS(double MS, double Kg){
+        velocityOutput += pid.calculate(acceleratorKraken.getVelocity().getValueAsDouble(), -MS/ 0.00765 / 60 * (24/18));
+        acceleratorKraken.setVoltage(velocityOutput);
+        SmartDashboard.putNumber("Accelerator SetPointMS", MS/ 0.00765 * (24/18));
+    }
     public static double getAcceleratorVelocityRPM(){
         return acceleratorKraken.getVelocity().getValueAsDouble() * 60;
+    }
+
+    public void DebugAccel(){
+        SmartDashboard.putNumber("Accelerator Speed", -acceleratorKraken.getVelocity().getValueAsDouble() * 60);
+        // SmartDashboard.putNumber("accelBallVelocityMS", 0.00765 * getAcceleratorVelocityRPM());
+    }
+    public void SetAccelerator(){
+        isShooting = !isShooting;
+    }
+
+    @Override
+    public void periodic() {
+        if(DriverStation.isEnabled()){
+            // DebugAccel();
+            if(isShooting == false){
+                applyVelocity(0, 0);
+            }else if (isShooting == true){
+                // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kAcceleratorMultiplierRPM, 0);
+                applyVelocity(3210,0 );
+            }
+        }else{
+            velocityOutput = 0;
+            isShooting = false;
+        }
     }
 }

@@ -11,7 +11,7 @@ public class ShooterCommand extends Command{
     
     ShooterSubsystem shooter = new ShooterSubsystem();
     Supplier<Boolean> OnButton;
-    static Double ShooterSpeed;
+    static Double ShooterSetPoint;
     Boolean isShooting;
 
     public ShooterCommand(ShooterSubsystem shooter ,Supplier<Boolean> OnButton){
@@ -29,7 +29,7 @@ public class ShooterCommand extends Command{
         calculateSpeed();
 
         if(OnButton.get() && isShooting == false){
-            shooter.applyVelocity(ShooterSpeed, 0);
+            shooter.applyVelocity(ShooterSetPoint, 0);
             isShooting = true;
         }else if (OnButton.get() && isShooting == true){
             shooter.applyVelocity(0, 0);
@@ -39,13 +39,13 @@ public class ShooterCommand extends Command{
     
     void calculateSpeed(){
         if (LimeLightSubsystem.DistanceToTarget() < ShooterConstants.kDistanceForHighSpeedMeters){
-            ShooterSpeed = ShooterConstants.kShooterLowSpeedRPM;
+            ShooterSetPoint = ShooterConstants.kShooterLowSpeedRPM;
         }else{
-            ShooterSpeed = ShooterConstants.kShooterHighSpeedRPM;
+            ShooterSetPoint = ShooterConstants.kShooterHighSpeedRPM;
         }
     }
 
-    public static double getShooterSpeed(){
-        return ShooterSpeed;
+    public static double getShooterSetPoint(){
+        return ShooterSetPoint;
     }
 }

@@ -6,37 +6,63 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase{
-    private static TalonFX shooterKraken1 = new TalonFX(0, "canBUS");
-    private static TalonFX shooterKraken2 = new TalonFX(1, "canBUS");
+    private static TalonFX shooterKrakenDir = new TalonFX(31, "ShooterCAN");
+    private static TalonFX shooterKrakenEsq = new TalonFX(32, "ShooterCAN");
+    PIDController pid = new PIDController(0.01, 0, 0);
+    double ShooterVoltage = 0;
+    static Double ShooterSetPoint;
+    boolean isShooting = false;
 
-    TalonFXConfiguration configs = new TalonFXConfiguration();
     public ShooterSubsystem(){
-        shooterKraken2.setControl(new Follower(shooterKraken1.getDeviceID(), MotorAlignmentValue.Opposed));
-
-
-        configs.Feedback.SensorToMechanismRatio = 1.0;
-
-        configs.Slot0.kS = 0.1; // Add 0.1 V output to overcome static friction
-        configs.Slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        configs.Slot0.kP = 0.11; // An error of 1 rps results in 0.11 V output
-        configs.Slot0.kI = 0; // no output for integrated error
-        configs.Slot0.kD = 0; // no output for error derivative
-
-        shooterKraken1.getConfigurator().apply(configs);
+        shooterKrakenEsq.setControl(new Follower(shooterKrakenDir.getDeviceID(), MotorAlignmentValue.Opposed));
+        isShooting = false;
+        ShooterVoltage = 0;
+        ShooterSetPoint = 0.0;
     }
 
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
-
-    public void applyVelocity(double SpeedRPS, double Kg){
-        shooterKraken1.setControl(m_request.withVelocity(SpeedRPS).withFeedForward(Kg));
+    public void applyVelocity(double SpeedRPM, double Kg){
+        ShooterVoltage += pid.calculate(shooterKrakenDir.getVelocity().getValueAsDouble() ,SpeedRPM / 60);
+        shooterKrakenDir.setVoltage(ShooterVoltage);
+        SmartDashboard.putNumber("Shooter SetPoint", SpeedRPM);
     }
 
     public static double getShooterVelocityRPM(){
-        return shooterKraken1.getVelocity().getValueAsDouble() * 60;
+        return shooterKrakenDir.getVelocity().getValueAsDouble() * 60;
+    }
+
+    public void DebugShooter(){
+        // SmartDashboard.putNumber("Shooter Speed", shooterKrakenDir.getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("ShooterBallVelocityMS", 0.01193 * getShooterVelocityRPM());
+    }
+
+    
+    public void ActOrNotShooter(){
+       isShooting = !isShooting;
+    }
+
+    @Override
+    public void periodic() {
+        if(DriverStation.isEnabled()){
+            ShooterSetPoint = LimeLightSubsystem.calculateSpeed();
+            if(isShooting == false){
+                applyVelocity(0, 0);
+            }else if (isShooting == true){
+                applyVelocity(2900, 0);
+            }
+        }
+        else{
+            isShooting = false;
+            ShooterVoltage = 0;
+            ShooterSetPoint = 0.0;
+        }
     }
 
 }

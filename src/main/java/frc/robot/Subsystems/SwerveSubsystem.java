@@ -57,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
     SwerveModulePosition[] saas;
         
-    private final Pigeon2 pigeon = new Pigeon2(5, "rio");
+    private final Pigeon2 pigeon = new Pigeon2(5, "BallSystemCAN");
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(0),
                                                                         new SwerveModulePosition[]{
                                                                             frontLeft.GetModulePosition(),
@@ -99,11 +99,6 @@ public class SwerveSubsystem extends SubsystemBase {
                               new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.15)),
                               config ,
                               () -> {
-                                // var alliance = DriverStation.getAlliance();
-                                // if (alliance.isPresent()) {
-                                //     SmartDashboard.putBoolean("inverted",  alliance.get() == DriverStation.Alliance.Red);
-                                //     return alliance.get() == DriverStation.Alliance.Red;
-                                // }
                                 return false;
                               },
                               this);

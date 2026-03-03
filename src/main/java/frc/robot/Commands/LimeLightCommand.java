@@ -19,7 +19,7 @@ import frc.robot.Subsystems.SwerveSubsystem;
 public class LimeLightCommand extends Command{
     LimeLightSubsystem limeLightSubsystem = new LimeLightSubsystem();
     SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-    public PIDController pid = new PIDController(0.03, 0, 0.0);
+    public PIDController pid = new PIDController(0.03, 0.0, 0.0);
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private Supplier<Double> xSpdFunction, ySpdFunction;
     private Supplier<Boolean> endAimSup;
@@ -50,7 +50,7 @@ public class LimeLightCommand extends Command{
     public void execute() {
         // 1. Get real-time joystick inputs
         NetworkTableEntry tx = LimeLightSubsystem.table.getEntry("tx");
-        double aligningMaxSpd = 0.17;
+        double aligningMaxSpd = 0.6;
         
 
         double correctRotation = MathUtil.clamp(pid.calculate(tx.getDouble(0.0), 0), -aligningMaxSpd, aligningMaxSpd);
@@ -69,7 +69,7 @@ public class LimeLightCommand extends Command{
 
     public void OutputToWheels(double xspd, double yspd,double turningspd){
         // 2. Apply deadband
-        turningspd = Math.abs(turningspd) > AutoConstants.kAngleDeadband ? turningspd : 0.0;
+        turningspd = Math.abs(turningspd) > 0.2 ? turningspd : 0.0;
         xspd = Math.abs(xspd) > OIConstants.kDeadband ? xspd : 0.0;
         yspd = Math.abs(yspd) > OIConstants.kDeadband ? yspd : 0.0;
 
