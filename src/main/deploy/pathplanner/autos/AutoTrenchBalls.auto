@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Trent balls"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BallsTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchHub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLight-Oriented"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AccelState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CapState"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CylinderState"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

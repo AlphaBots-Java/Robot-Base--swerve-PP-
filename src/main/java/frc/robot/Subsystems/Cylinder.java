@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.Commands.ShooterCommand;
 import frc.robot.Constants.ShooterConstants;
 
 public class Cylinder extends SubsystemBase {
@@ -77,9 +76,7 @@ public class Cylinder extends SubsystemBase {
         // SmartDashboard.putNumber("CylinderBallVelocityMS", 0.01534 * getCylinderVelocityRPM());
     }
     public void SetCylinder(){
-        if(ShooterSubsystem.m_currentSetpoint > 0){
             isShooting = !isShooting;
-        }
     }
     @Override
     public void periodic(){
@@ -99,7 +96,7 @@ public class Cylinder extends SubsystemBase {
             }else{
                 // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kCylinderMultiplierRPM, 0);
                 applyVelocity( 450, 0); //testRoutine
-            }
+        }
         }else{
             velocityOutput = 0;
             isShooting = false;

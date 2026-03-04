@@ -76,7 +76,7 @@ public class LimeLightCommandAuto extends Command{
 
     @Override
     public boolean isFinished() {
-        if(timer.hasElapsed(4)){
+        if(timer.hasElapsed(2)){
             return true;
         }
         else{

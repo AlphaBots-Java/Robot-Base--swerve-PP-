@@ -54,13 +54,7 @@ public class CapSubsystem extends SubsystemBase{
         return (getEncoderValue() * ShooterConstants.kCapStep); //O angulo real do cap do shootador
     }
     public void setAngleDegrees(double angle){
-        if (angle > 21) {
-            angle = 21;
-        }
-        // Se necessário, adicione um limite mínimo para o ângulo aqui, por exemplo:
-        if (angle < 0) {
-            angle = 0;
-        }
+        MathUtil.clamp(angle, 0.0, 21.0);
         AnglerMotor.setVoltage(capPID.calculate(getEncoderValue() , -angle * 14.87));
         SmartDashboard.putNumber("CapPosition", getEncoderValue() / 14.87);
         SmartDashboard.putNumber("AnglerSetPoint", angle * 14.87);

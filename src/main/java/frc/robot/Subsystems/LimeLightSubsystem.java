@@ -18,7 +18,7 @@ public class LimeLightSubsystem {
         NetworkTableEntry tx = table.getEntry("tx");
         return tx.getDouble(0.0); // tx = desvio horizontal do alvo em graus
     }
-    public static double DistanceToTarget()
+    public static double DistanceToTarget()  
     {
         NetworkTableEntry ty = table.getEntry("ty");
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);

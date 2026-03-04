@@ -18,10 +18,12 @@ public class ShooterSubsystem extends SubsystemBase{
     private static TalonFX shooterKrakenEsq = new TalonFX(32, "ShooterCAN");
     public static double m_currentSetpoint = 0.0; // Armazena o setpoint de RPM atual
     private final PIDController pid = new PIDController(0.02, 0, 0.0001);
+    boolean isShooting;
     double shooterVoltage;
 
     public ShooterSubsystem(){
         shooterKrakenEsq.setControl(new Follower(shooterKrakenDir.getDeviceID(), MotorAlignmentValue.Opposed));
+        isShooting = false;
 
         // rpmMap.put(300.0, ShooterConstants.kShooterHighSpeedRPM);
     }
@@ -50,6 +52,9 @@ public class ShooterSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("ShooterBallVelocityMS", 0.01193 * getShooterVelocityRPM());
     }
 
+    public void SetShooter(){
+        isShooting = !isShooting;
+    }
 
     @Override
     public void periodic() {
@@ -57,6 +62,16 @@ public class ShooterSubsystem extends SubsystemBase{
         // O método periodic() deve ser usado para coisas que precisam rodar
         // constantemente, como atualizar a SmartDashboard.
         DebugShooter();
+        if(DriverStation.isEnabled()){
+            if(isShooting == false){
+                applyVelocity(0, 0);
+            }else{
+                // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kCylinderMultiplierRPM, 0);
+                applyVelocity( 2900, 0); //testRoutine
+        }
+        }else{
+            isShooting = false;
+        }
     }
 
 }

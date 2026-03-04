@@ -23,7 +23,6 @@ import frc.robot.Commands.CapCommand;
 import frc.robot.Commands.CatcherCommand;
 import frc.robot.Commands.LimeLightCommand;
 import frc.robot.Commands.LimeLightCommandAuto;
-import frc.robot.Commands.ShooterCommand;
 import frc.robot.Commands.SwerveCommand;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Accelerator;
@@ -41,9 +40,9 @@ public class RobotContainer {
   private final Joystick controller = new Joystick(0);
   private final PS5Controller buttonController = new PS5Controller(0);
   private final Trigger AlignTrigger = new JoystickButton(controller, 6);
-  private final Trigger ShooterTrigger = new JoystickButton(controller, 7);
   private final Trigger CatcherTrigger = new JoystickButton(controller, 3);
   private final Trigger CylinderTrigger = new JoystickButton(controller, 5);
+  private final Trigger ShooterTrigger = new JoystickButton(controller, 7);
   private final Cylinder cilindro = new Cylinder();
   private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final CapSubsystem cap = new CapSubsystem();
@@ -57,11 +56,18 @@ public class RobotContainer {
     Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
     Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
     Supplier<Boolean> endAimSupplier = () -> this.buttonController.getR1ButtonPressed();
+    Supplier<Boolean> ShooterSupplier = () -> this.buttonController.getL2ButtonPressed();
 
 
 
 
     NamedCommands.registerCommand("LimeLight-Oriented", new LimeLightCommandAuto(limelight, swerve));
+    NamedCommands.registerCommand("ShooterState", new InstantCommand(() -> {shooter.SetShooter();}));
+
+    NamedCommands.registerCommand("CapState", new InstantCommand(() -> {cap.RunExtender();}));
+    NamedCommands.registerCommand("AccelState", new InstantCommand(() -> {accelerator.SetAccelerator();}));
+    NamedCommands.registerCommand("CylinderState", new InstantCommand(() -> {cilindro.SetCylinder();}));
+    
     swerve.setDefaultCommand(new SwerveCommand(
       this.swerve,
       axisZero,
@@ -76,7 +82,7 @@ public class RobotContainer {
                                         limelight, 
                                         swerve));
 
-    shooter.setDefaultCommand(new ShooterCommand(shooter, () -> ShooterTrigger.getAsBoolean()));
+    ShooterTrigger.onTrue(new InstantCommand(() -> {shooter.SetShooter();}));
     ShooterTrigger.onTrue(new InstantCommand(() -> {cap.RunExtender();}));
     ShooterTrigger.onTrue(new InstantCommand(() -> {accelerator.SetAccelerator();}));
     CylinderTrigger.onTrue(new InstantCommand(() -> {cilindro.SetCylinder();}));
