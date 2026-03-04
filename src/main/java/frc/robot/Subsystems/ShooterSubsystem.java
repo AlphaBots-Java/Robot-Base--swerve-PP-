@@ -11,58 +11,52 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterSubsystem extends SubsystemBase{
     private static TalonFX shooterKrakenDir = new TalonFX(31, "ShooterCAN");
     private static TalonFX shooterKrakenEsq = new TalonFX(32, "ShooterCAN");
-    PIDController pid = new PIDController(0.01, 0, 0);
-    double ShooterVoltage = 0;
-    static Double ShooterSetPoint;
-    boolean isShooting = false;
+    public static double m_currentSetpoint = 0.0; // Armazena o setpoint de RPM atual
+    private final PIDController pid = new PIDController(0.02, 0, 0.0001);
+    double shooterVoltage;
 
     public ShooterSubsystem(){
         shooterKrakenEsq.setControl(new Follower(shooterKrakenDir.getDeviceID(), MotorAlignmentValue.Opposed));
-        isShooting = false;
-        ShooterVoltage = 0;
-        ShooterSetPoint = 0.0;
+
+        // rpmMap.put(300.0, ShooterConstants.kShooterHighSpeedRPM);
     }
 
 
     public void applyVelocity(double SpeedRPM, double Kg){
-        ShooterVoltage += pid.calculate(shooterKrakenDir.getVelocity().getValueAsDouble() ,SpeedRPM / 60);
-        shooterKrakenDir.setVoltage(ShooterVoltage);
-        SmartDashboard.putNumber("Shooter SetPoint", SpeedRPM);
+        m_currentSetpoint = SpeedRPM; // Atualiza o setpoint armazenado
+        shooterVoltage += pid.calculate(shooterKrakenDir.getVelocity().getValueAsDouble() ,SpeedRPM / 60);
+        shooterKrakenDir.setVoltage(shooterVoltage);
+        SmartDashboard.putNumber("Shooter SetPoint", m_currentSetpoint);
+    }
+
+    public double getCurrentSetpoint() {
+        return m_currentSetpoint;
     }
 
     public static double getShooterVelocityRPM(){
         return shooterKrakenDir.getVelocity().getValueAsDouble() * 60;
     }
+    public static double getShooterVelocityMS(){
+        return 0.01193 * getShooterVelocityRPM();
+    }
 
     public void DebugShooter(){
-        // SmartDashboard.putNumber("Shooter Speed", shooterKrakenDir.getVelocity().getValueAsDouble() * 60);
+        SmartDashboard.putNumber("Shooter Speed", getShooterVelocityRPM());
         SmartDashboard.putNumber("ShooterBallVelocityMS", 0.01193 * getShooterVelocityRPM());
     }
 
-    
-    public void ActOrNotShooter(){
-       isShooting = !isShooting;
-    }
 
     @Override
     public void periodic() {
-        if(DriverStation.isEnabled()){
-            ShooterSetPoint = LimeLightSubsystem.calculateSpeed();
-            if(isShooting == false){
-                applyVelocity(0, 0);
-            }else if (isShooting == true){
-                applyVelocity(2900, 0);
-            }
-        }
-        else{
-            isShooting = false;
-            ShooterVoltage = 0;
-            ShooterSetPoint = 0.0;
-        }
+        // A lógica de controle foi movida para o ShooterCommand.
+        // O método periodic() deve ser usado para coisas que precisam rodar
+        // constantemente, como atualizar a SmartDashboard.
+        DebugShooter();
     }
 
 }

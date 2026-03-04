@@ -14,6 +14,7 @@ public class Accelerator extends SubsystemBase{
     private final PIDController pid = new PIDController(0.05, 0, 0);
     double velocityOutput = 0;
     Boolean isShooting = false;
+    public static double accelSetPoint;
 
     public Accelerator(){
         velocityOutput = 0;
@@ -22,6 +23,7 @@ public class Accelerator extends SubsystemBase{
 
     
     public void applyVelocity(double SpeedRPM, double Kg){
+        accelSetPoint = SpeedRPM;
         velocityOutput += pid.calculate(acceleratorKraken.getVelocity().getValueAsDouble(), -SpeedRPM / 60 * (24/18));
         acceleratorKraken.setVoltage(velocityOutput);
         SmartDashboard.putNumber("Accelerator SetPoint", SpeedRPM * (24/18));
@@ -34,6 +36,9 @@ public class Accelerator extends SubsystemBase{
     }
     public static double getAcceleratorVelocityRPM(){
         return acceleratorKraken.getVelocity().getValueAsDouble() * 60;
+    }
+    public static double getAcceleratorVelocityMS(){
+        return  0.00765 * acceleratorKraken.getVelocity().getValueAsDouble() * 60;
     }
 
     public void DebugAccel(){
@@ -51,8 +56,12 @@ public class Accelerator extends SubsystemBase{
             if(isShooting == false){
                 applyVelocity(0, 0);
             }else if (isShooting == true){
-                // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kAcceleratorMultiplierRPM, 0);
-                applyVelocity(3210,0 );
+                // if(LimeLightSubsystem.DistanceToTarget() <= 290 ){
+                //     // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kAcceleratorMultiplierRPM, 0);
+                //     applyVelocity(3210,0 );
+                // }else{
+                    applyVelocity(3210,0 );
+                // }
             }
         }else{
             velocityOutput = 0;

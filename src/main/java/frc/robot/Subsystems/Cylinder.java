@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Commands.ShooterCommand;
 import frc.robot.Constants.ShooterConstants;
 
@@ -49,10 +50,10 @@ public class Cylinder extends SubsystemBase {
         double accelVelocity = 0.00266 * AcceleratorSpeedMargin;
         double shooterVelocity = 0.00266 * ShooterSpeedMargin;
 
-        // return       Accelerator.getAcceleratorVelocityRPM() >= AcceleratorCommand.getAcceleratorSetPoint() 
-        //         &&   ShooterSubsystem.getShooterVelocityRPM() >= ShooterCommand.getShooterSetPoint()
-        //         &&   shooterVelocity > accelVelocity;
-        return true;
+        return       Accelerator.getAcceleratorVelocityRPM() >= Accelerator.accelSetPoint - 1
+                &&   ShooterSubsystem.getShooterVelocityRPM() >= ShooterSubsystem.m_currentSetpoint -1;
+                // &&   shooterVelocity > accelVelocity;
+        // return true;
     }
 
     public void applyVelocity(double SpeedRPM, double Kg){
@@ -76,12 +77,20 @@ public class Cylinder extends SubsystemBase {
         // SmartDashboard.putNumber("CylinderBallVelocityMS", 0.01534 * getCylinderVelocityRPM());
     }
     public void SetCylinder(){
-        // if(CanShoot()){
+        if(ShooterSubsystem.m_currentSetpoint > 0){
             isShooting = !isShooting;
-        // }
+        }
     }
     @Override
     public void periodic(){
+        if(ShooterSubsystem.m_currentSetpoint == 0){
+            isShooting = false;
+        }
+        if(CanShoot()){
+            CandleSubsystem.setBlinkGreen();
+        }else{
+            CandleSubsystem.setBlinkRed();
+        }
         if(DriverStation.isEnabled()){
             DebugCylinder();
             SmartDashboard.putBoolean("Posso Chutar", isShooting);
@@ -89,12 +98,13 @@ public class Cylinder extends SubsystemBase {
                 applyVelocity(0, 0);
             }else{
                 // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kCylinderMultiplierRPM, 0);
-                applyVelocity( 400, 0); //testRoutine
+                applyVelocity( 450, 0); //testRoutine
             }
         }else{
             velocityOutput = 0;
             isShooting = false;
         }
+        DebugCylinder();
     }
 
 

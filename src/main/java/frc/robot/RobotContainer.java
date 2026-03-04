@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,12 +25,14 @@ import frc.robot.Commands.LimeLightCommand;
 import frc.robot.Commands.LimeLightCommandAuto;
 import frc.robot.Commands.ShooterCommand;
 import frc.robot.Commands.SwerveCommand;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Accelerator;
 import frc.robot.Subsystems.CapSubsystem;
 import frc.robot.Subsystems.CatcherSubsystem;
 import frc.robot.Subsystems.Cylinder;
 import frc.robot.Subsystems.LimeLightSubsystem;
 import frc.robot.Subsystems.ShooterSubsystem;
+import frc.robot.Subsystems.LedStrip;
 import frc.robot.Subsystems.SwerveSubsystem;
 
 public class RobotContainer {
@@ -36,10 +40,10 @@ public class RobotContainer {
   private final SwerveSubsystem swerve = new SwerveSubsystem();
   private final Joystick controller = new Joystick(0);
   private final PS5Controller buttonController = new PS5Controller(0);
-  private final Trigger button1 = new JoystickButton(controller, 6);
-
-  private final Trigger ShooterTrigger = new JoystickButton(controller, 5);
-  private final Trigger CylinderTrigger = new JoystickButton(controller, 7);
+  private final Trigger AlignTrigger = new JoystickButton(controller, 6);
+  private final Trigger ShooterTrigger = new JoystickButton(controller, 7);
+  private final Trigger CatcherTrigger = new JoystickButton(controller, 3);
+  private final Trigger CylinderTrigger = new JoystickButton(controller, 5);
   private final Cylinder cilindro = new Cylinder();
   private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final CapSubsystem cap = new CapSubsystem();
@@ -56,6 +60,7 @@ public class RobotContainer {
 
 
 
+
     NamedCommands.registerCommand("LimeLight-Oriented", new LimeLightCommandAuto(limelight, swerve));
     swerve.setDefaultCommand(new SwerveCommand(
       this.swerve,
@@ -65,17 +70,19 @@ public class RobotContainer {
       buttonSup
     ));
 
-    button1.onTrue(new LimeLightCommand(axisZero,
+    AlignTrigger.onTrue(new LimeLightCommand(axisZero,
                                         axisOne,
                                         endAimSupplier,
                                         limelight, 
                                         swerve));
 
-    ShooterTrigger.onTrue(new InstantCommand(() -> {shooter.ActOrNotShooter();}));
+    shooter.setDefaultCommand(new ShooterCommand(shooter, () -> ShooterTrigger.getAsBoolean()));
     ShooterTrigger.onTrue(new InstantCommand(() -> {cap.RunExtender();}));
     ShooterTrigger.onTrue(new InstantCommand(() -> {accelerator.SetAccelerator();}));
     CylinderTrigger.onTrue(new InstantCommand(() -> {cilindro.SetCylinder();}));
 
+
+    
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }

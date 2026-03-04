@@ -10,6 +10,14 @@ import frc.robot.Constants.ShooterConstants;
 public class LimeLightSubsystem {
     public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-dir");
 
+    public static boolean hasTarget() {
+        NetworkTableEntry tv = table.getEntry("tv");
+        return tv.getDouble(0.0) == 1.0; // tv = 1 se um alvo é visível, 0 se não
+    }
+    public static double getTx() {
+        NetworkTableEntry tx = table.getEntry("tx");
+        return tx.getDouble(0.0); // tx = desvio horizontal do alvo em graus
+    }
     public static double DistanceToTarget()
     {
         NetworkTableEntry ty = table.getEntry("ty");

@@ -15,12 +15,15 @@ import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands.LimeLightCommand;
 import frc.robot.Constants.ShooterConstants;
 
 public class CapSubsystem extends SubsystemBase{
     public TalonFX AnglerMotor = new TalonFX(30, "ShooterCAN");
     CANcoder capThroghBourne = new CANcoder(2, "ShooterCAN");
     InterpolatingDoubleTreeMap intTreeMap = new InterpolatingDoubleTreeMap();
+    // 440 - 15
+    // 160 - 
     
 
 
@@ -39,7 +42,7 @@ public class CapSubsystem extends SubsystemBase{
     }
 
     boolean CanShoot(){
-        return ShooterSubsystem.getShooterVelocityRPM() > Accelerator.getAcceleratorVelocityRPM(); //colocar em ms
+        return ShooterSubsystem.getShooterVelocityMS() > Accelerator.getAcceleratorVelocityMS(); //colocar em ms
                
     }
 
@@ -51,6 +54,13 @@ public class CapSubsystem extends SubsystemBase{
         return (getEncoderValue() * ShooterConstants.kCapStep); //O angulo real do cap do shootador
     }
     public void setAngleDegrees(double angle){
+        if (angle > 21) {
+            angle = 21;
+        }
+        // Se necessário, adicione um limite mínimo para o ângulo aqui, por exemplo:
+        if (angle < 0) {
+            angle = 0;
+        }
         AnglerMotor.setVoltage(capPID.calculate(getEncoderValue() , -angle * 14.87));
         SmartDashboard.putNumber("CapPosition", getEncoderValue() / 14.87);
         SmartDashboard.putNumber("AnglerSetPoint", angle * 14.87);
@@ -61,13 +71,27 @@ public class CapSubsystem extends SubsystemBase{
         isExtended = !isExtended;
     }
 
+    public boolean isExtended() {
+        return isExtended;
+    }
+
+    public double getAngleForDistance(double distance) {
+        return intTreeMap.get(distance);
+    }
+
     @Override
      public void periodic(){
         if(DriverStation.isEnabled()){
             if(isExtended == false){
                 setAngleDegrees(0);
             }else if (isExtended == true){
-                setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
+                // if(LimeLightSubsystem.DistanceToTarget() <= 290){
+                //     setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
+                // }else{
+                    setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
+                // }
+                
+                // intTreeMap.get(LimeLightSubsystem.DistanceToTarget())
             }
         }else{
             isExtended = false;
