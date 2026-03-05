@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Trent balls"
@@ -17,15 +23,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchHub"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "LimeLight-Oriented"
+            "name": "AxisState"
           }
         },
         {
@@ -47,9 +47,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchHub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLight-Oriented"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
@@ -61,7 +73,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CylinderState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AccelState"
           }
         }
       ]

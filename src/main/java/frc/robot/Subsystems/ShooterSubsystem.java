@@ -1,8 +1,6 @@
 package frc.robot.Subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -10,8 +8,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ShooterConstants;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterSubsystem extends SubsystemBase{
     private static TalonFX shooterKrakenDir = new TalonFX(31, "ShooterCAN");

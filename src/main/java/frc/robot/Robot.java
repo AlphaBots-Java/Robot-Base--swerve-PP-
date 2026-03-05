@@ -9,19 +9,10 @@ package frc.robot;
 
 import com.ctre.phoenix6.Orchestra;
 
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Subsystems.Accelerator;
 import frc.robot.Subsystems.CandleSubsystem;
-import frc.robot.Subsystems.CapSubsystem;
-import frc.robot.Subsystems.Cylinder;
-import frc.robot.Subsystems.ShooterSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -40,7 +31,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    CANdle.setRainbow();// Run rainbow for 5 seconds on boot to signal initialization
+    // CANdle.setRainbow();// Run rainbow for 5 seconds on boot to signal initialization
   }
 
   @Override

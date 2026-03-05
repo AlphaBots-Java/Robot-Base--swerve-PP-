@@ -125,7 +125,7 @@ public final class Constants {
 
         public static final double kDistanceForHighSpeedMeters = 2;
 
-        public static final double kCatcherRotationsToMM = 90; //definir
+        public static final double kCatcherRotationsToMM = 75 ; //75 mm pra uma volta do eixo
         public static final double kCatcherMaxExtensionMM = 80;
     }
 

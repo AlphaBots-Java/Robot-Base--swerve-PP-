@@ -1,17 +1,14 @@
 package frc.robot.Subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-import frc.robot.Constants.ShooterConstants;
+
 
 public class Cylinder extends SubsystemBase {
     private TalonFX cylinderKraken = new TalonFX(35, "BallSystemCAN");
@@ -45,13 +42,12 @@ public class Cylinder extends SubsystemBase {
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
     public boolean CanShoot(){
-        double ballVelocity = 0.01534 * getCylinderVelocityRPM();
         double accelVelocity = 0.00266 * AcceleratorSpeedMargin;
         double shooterVelocity = 0.00266 * ShooterSpeedMargin;
 
         return       Accelerator.getAcceleratorVelocityRPM() >= Accelerator.accelSetPoint - 1
-                &&   ShooterSubsystem.getShooterVelocityRPM() >= ShooterSubsystem.m_currentSetpoint -1;
-                // &&   shooterVelocity > accelVelocity;
+                &&   ShooterSubsystem.getShooterVelocityRPM() >= ShooterSubsystem.m_currentSetpoint -1
+                &&   shooterVelocity >= accelVelocity;
         // return true;
     }
 
