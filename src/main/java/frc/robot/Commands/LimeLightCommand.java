@@ -51,6 +51,8 @@ public class LimeLightCommand extends Command{
         // 1. Get real-time joystick inputs
         NetworkTableEntry tx = LimeLightSubsystem.table.getEntry("tx");
         double aligningMaxSpd = 0.6;
+
+        double SWMAngle = tx.getDouble(0.0) + Math.atan(LimeLightSubsystem.DistanceToTargetX()/ LimeLightSubsystem.DistanceToTarget());
         
 
         double correctRotation = MathUtil.clamp(pid.calculate(tx.getDouble(0.0), 0), -aligningMaxSpd, aligningMaxSpd);

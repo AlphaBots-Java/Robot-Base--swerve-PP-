@@ -82,7 +82,8 @@ public class CapSubsystem extends SubsystemBase{
                 // if(LimeLightSubsystem.DistanceToTarget() <= 290){
                 //     setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
                 // }else{
-                    setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
+                Double xyHypotenous = Math.sqrt(Math.pow(SwerveSubsystem.yStandardDeviation, 2) + Math.pow(SwerveSubsystem.xStandardDeviation, 2));
+                setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget() + xyHypotenous));
                 // }
                 
                 // intTreeMap.get(LimeLightSubsystem.DistanceToTarget())

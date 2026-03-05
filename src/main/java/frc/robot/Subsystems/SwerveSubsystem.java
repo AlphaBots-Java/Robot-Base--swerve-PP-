@@ -1,4 +1,6 @@
 package frc.robot.Subsystems; 
+import java.util.Stack;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -66,6 +68,12 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                             backRight.GetModulePosition(),}
                                                                             );
     
+    Stack<Double> lastXvalues = new Stack<>();
+    int maxXvalues = 5;
+    public static double xStandardDeviation = 0;
+    Stack<Double> lastYvalues = new Stack<>();
+    int maxYvalues = 5;
+    public static double yStandardDeviation = 0;
 
     public SwerveSubsystem() {
 
@@ -76,7 +84,8 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
-
+        double xStandardDeviation = 0;
+        double yStandardDeviation = 0;
 
     RobotConfig config;
         try {
@@ -156,6 +165,20 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("velocity3", backRight.getDriveVelocity());
 
         SmartDashboard.putNumber("Limelight-Distance-toTarget", LimeLightSubsystem.DistanceToTarget());
+
+        // Calculate the derivative of robot`s position according to the apriltag
+
+        lastXvalues.push(LimeLightSubsystem.DistanceToTargetX());
+        if(lastXvalues.size() > maxXvalues){
+            lastXvalues.pop();
+        }
+        xStandardDeviation = Math.sqrt((GetStackSum(lastXvalues) - GetStackMean(lastXvalues))/lastXvalues.size() - 1);
+
+        lastYvalues.push(LimeLightSubsystem.DistanceToTarget());
+        if(lastYvalues.size() > maxYvalues){
+            lastYvalues.pop();
+        }
+        yStandardDeviation = Math.sqrt((GetStackSum(lastYvalues) - GetStackMean(lastYvalues))/lastYvalues.size() - 1);
     }
 
     public void stopModules() {
@@ -184,6 +207,16 @@ public class SwerveSubsystem extends SubsystemBase {
         frontRight.orchestra.play();
         backLeft.orchestra.play();
         backRight.orchestra.play();
+    }
+    Double GetStackSum(Stack<Double> stack){
+        double sum = 0;
+        for (double value : stack) {
+            sum += value;
+        }
+        return sum;
+    }
+    Double GetStackMean(Stack<Double> stack){
+        return GetStackSum(stack) / stack.size();
     }
     
 }

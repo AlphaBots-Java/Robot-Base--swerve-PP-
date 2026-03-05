@@ -45,5 +45,23 @@ public class LimeLightSubsystem {
             return ShooterConstants.kShooterHighSpeedRPM;
         }
     }
+    public static double DistanceToTargetX()  
+    {
+        NetworkTableEntry tx = table.getEntry("tx");
+        double targetOffsetAngle_Horizontal = tx.getDouble(0.0);
+
+
+        // distance from the center of the Limelight lens to the floor
+        double limelightLensHeightCM = 40.0; 
+        // distance from the target to the floor
+        double goalHeightCM = 112.5; 
+        
+        double angleToGoalDegrees = targetOffsetAngle_Horizontal;
+        double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
+        SmartDashboard.putNumber("tx", Math.tan(angleToGoalRadians));
+
+        //calculate distance
+        return DistanceToTarget() * Math.tan(angleToGoalRadians);
+    }
 
 }
