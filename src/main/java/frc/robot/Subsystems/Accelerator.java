@@ -46,6 +46,10 @@ public class Accelerator extends SubsystemBase{
         isShooting = !isShooting;
     }
 
+    public void TurnOffAccelerator(){
+        isShooting = false;
+    }
+
     @Override
     public void periodic() {
         if(DriverStation.isEnabled()){

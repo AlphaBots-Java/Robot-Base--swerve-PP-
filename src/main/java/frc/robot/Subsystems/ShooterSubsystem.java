@@ -52,6 +52,10 @@ public class ShooterSubsystem extends SubsystemBase{
         isShooting = !isShooting;
     }
 
+    public void TurnOffShooter(){
+        isShooting = false;
+    }
+
     @Override
     public void periodic() {
         // A lógica de controle foi movida para o ShooterCommand.

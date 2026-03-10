@@ -18,14 +18,16 @@ public class CapSubsystem extends SubsystemBase{
     // 440 - 15
     // 160 - 
     
-
-
+    
+    
     PIDController capPID = new PIDController(0.1 ,0.0, 0.0);
+    boolean autoAlign = true;
     boolean isExtended = false;
 
     public CapSubsystem(){
         // capPID.enableContinuousInput(-180, 180);
         isExtended = false;
+        autoAlign = true;
         intTreeMap.put(290.0, 16.0);
         intTreeMap.put(260.0, 9.0);
         intTreeMap.put(230.0, 7.0);
@@ -58,6 +60,10 @@ public class CapSubsystem extends SubsystemBase{
         isExtended = !isExtended;
     }
 
+    public void ChangeAlignMode(){
+        autoAlign = !autoAlign;
+    }
+
     public boolean isExtended() {
         return isExtended;
     }
@@ -72,16 +78,15 @@ public class CapSubsystem extends SubsystemBase{
             if(isExtended == false){
                 setAngleDegrees(0);
             }else if (isExtended == true){
-                // if(LimeLightSubsystem.DistanceToTarget() <= 290){
-                //     setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
-                // }else{
+                // if(autoAlign == true){
                     setAngleDegrees(intTreeMap.get(LimeLightSubsystem.DistanceToTarget()));
+                // }else{
+                //     setAngleDegrees(18);
                 // }
-                
-                // intTreeMap.get(LimeLightSubsystem.DistanceToTarget())
             }
         }else{
             isExtended = false;
+            autoAlign = true;
             setAngleDegrees(0);
         }
      }  

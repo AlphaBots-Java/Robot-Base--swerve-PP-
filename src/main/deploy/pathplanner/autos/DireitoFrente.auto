@@ -1,0 +1,200 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ExtenderState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Trent balls"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BallsTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AccelState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CapState"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchHub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLight-Oriented"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CylinderState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtenderState"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

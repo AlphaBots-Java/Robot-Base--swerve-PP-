@@ -99,6 +99,10 @@ public class SwerveSubsystem extends SubsystemBase {
                               new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.15)),
                               config ,
                               () -> {
+                                // var alliance = DriverStation.getAlliance();
+                                // if (alliance.isPresent()) {
+                                //     return alliance.get() == DriverStation.Alliance.Red;
+                                // }
                                 return false;
                               },
                               this);
