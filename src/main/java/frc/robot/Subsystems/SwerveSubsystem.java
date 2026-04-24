@@ -5,6 +5,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -55,15 +56,14 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderPort,
             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
-    SwerveModulePosition[] saas;
         
     private final Pigeon2 pigeon = new Pigeon2(5, "BallSystemCAN");
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(0),
+    public SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(0),
                                                                         new SwerveModulePosition[]{
                                                                             frontLeft.GetModulePosition(),
                                                                             frontRight.GetModulePosition(), 
                                                                             backLeft.GetModulePosition(), 
-                                                                            backRight.GetModulePosition(),}
+                                                                            backRight.GetModulePosition(),}, new Pose2d()
                                                                             );
     
 
@@ -99,6 +99,10 @@ public class SwerveSubsystem extends SubsystemBase {
                               new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.15)),
                               config ,
                               () -> {
+                                // var alliance = DriverStation.getAlliance();
+                                // if (alliance.isPresent()) {
+                                //     return alliance.get() == DriverStation.Alliance.Red;
+                                // }
                                 return false;
                               },
                               this);
@@ -111,6 +115,15 @@ public class SwerveSubsystem extends SubsystemBase {
         pigeon.reset();
     }
 
+    public SwerveModuleState[] getModuleStates() {
+    return new SwerveModuleState[] {
+        frontLeft.getState(),
+        frontRight.getState(),
+        backLeft.getState(),
+        backRight.getState()
+    };
+}
+
     //Correcao da orientacao do robo (-90)
     public double getHeading() {
         return pigeon.getRotation2d().getDegrees();
@@ -121,9 +134,13 @@ public class SwerveSubsystem extends SubsystemBase {
         return pigeon.getRotation2d();
     }
 
+    public double getTurnRate() {
+        return pigeon.getAngularVelocityYWorld().getValueAsDouble();
+    }
+
 
     public Pose2d getPose() {
-       return odometer.getPoseMeters();
+       return odometer.getEstimatedPosition();
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -149,11 +166,6 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("angle1", backLeft.getAbsoluteEncoderDeg());
         SmartDashboard.putNumber("angle2", frontRight.getAbsoluteEncoderDeg());
         SmartDashboard.putNumber("angle3", backRight.getAbsoluteEncoderDeg());
-
-        SmartDashboard.putNumber("velocity0", frontLeft.getDriveVelocity());
-        SmartDashboard.putNumber("velocity1", backLeft.getDriveVelocity());
-        SmartDashboard.putNumber("velocity2", frontRight.getDriveVelocity());
-        SmartDashboard.putNumber("velocity3", backRight.getDriveVelocity());
 
         SmartDashboard.putNumber("Limelight-Distance-toTarget", LimeLightSubsystem.DistanceToTarget());
     }

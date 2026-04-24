@@ -1,107 +1,159 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
+
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.LimeLightCommand;
-import frc.robot.Commands.LimeLightCommandAuto;
-import frc.robot.Commands.SwerveCommand;
-import frc.robot.Subsystems.Accelerator;
-import frc.robot.Subsystems.CapSubsystem;
-import frc.robot.Subsystems.CatcherSubsystem;
-import frc.robot.Subsystems.Cylinder;
-import frc.robot.Subsystems.LimeLightSubsystem;
-import frc.robot.Subsystems.ShooterSubsystem;
-import frc.robot.Subsystems.SwerveSubsystem;
+
+import frc.robot.Commands.*;
+import frc.robot.Subsystems.*;
 
 public class RobotContainer {
+
+  // Subsystems
   private final LimeLightSubsystem limelight = new LimeLightSubsystem();
   private final SwerveSubsystem swerve = new SwerveSubsystem();
-  private final Joystick controller = new Joystick(0);
-  private final PS5Controller buttonController = new PS5Controller(0);
-  private final Trigger AlignTrigger = new JoystickButton(controller, 6);
-  private final Trigger CatcherTrigger = new JoystickButton(controller, 1);
-  private final Trigger DropperTrigger = new JoystickButton(controller, 3);
-  private final Trigger CylinderTrigger = new JoystickButton(controller, 5);
-  private final Trigger ShooterTrigger = new JoystickButton(controller, 7);
   private final Cylinder cilindro = new Cylinder();
   private final ShooterSubsystem shooter = new ShooterSubsystem();
   private final CapSubsystem cap = new CapSubsystem();
   private final Accelerator accelerator = new Accelerator();
   private final CatcherSubsystem catcher = new CatcherSubsystem();
 
-  private final SendableChooser<Command> autoChooser;
+  // Controllers
+  private final PS5Controller driver = new PS5Controller(0);
+  private final PS5Controller copilot = new PS5Controller(1);
+
+  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
   public RobotContainer() {
-    Supplier<Double> axisZero = () -> -this.controller.getRawAxis(1);
-    Supplier<Double> axisOne = () -> -this.controller.getRawAxis(0);
-    Supplier<Double> axisTwo = () -> this.controller.getRawAxis(2);
-    Supplier<Boolean> buttonSup = () -> this.buttonController.getOptionsButton();
-    Supplier<Boolean> endAimSupplier = () -> this.buttonController.getR1ButtonPressed();
-    BooleanSupplier isShootingSupplier = () -> ShooterSubsystem.m_currentSetpoint > 0;
+    configureDefaultCommands();
+    configureBindings();
+    configureAuto();
+  }
 
-    NamedCommands.registerCommand("LimeLight-Oriented", new LimeLightCommandAuto(limelight, swerve));
-    NamedCommands.registerCommand("ShooterState", new InstantCommand(() -> {shooter.SetShooter();}));
+  private void configureDefaultCommands() {
 
-    NamedCommands.registerCommand("CapState", new InstantCommand(() -> {cap.RunExtender();}));
-    NamedCommands.registerCommand("AccelState", new InstantCommand(() -> {accelerator.SetAccelerator();}));
-    NamedCommands.registerCommand("CylinderState", new InstantCommand(() -> {cilindro.SetCylinder();}));
-    NamedCommands.registerCommand("AxisState", new InstantCommand(() -> {catcher.SetCatching();}));
-    swerve.setDefaultCommand(new SwerveCommand(
-      this.swerve,
-      axisZero,
-      axisOne,
-      axisTwo,
-      buttonSup
-    ));
+    Supplier<Double> axisX = () -> -driver.getLeftY();
+    Supplier<Double> axisY = () -> -driver.getLeftX();
+    Supplier<Double> rot = () -> driver.getRightX();
+    Supplier<Boolean> fieldOriented = () -> driver.getOptionsButton();
 
-    AlignTrigger.onTrue(new LimeLightCommand(axisZero,
-                                        axisOne,
-                                        endAimSupplier,
-                                        limelight, 
-                                        swerve));
+    swerve.setDefaultCommand(
+      new SwerveCommand(swerve, axisX, axisY, rot, fieldOriented)
+    );
 
+    // 🧠 UPDATED: catcher now stops cleanly
+    catcher.setDefaultCommand(
+      new RunCommand(() -> catcher.stop(), catcher)
+    );
 
+    accelerator.setDefaultCommand(
+      new RunCommand(() -> accelerator.TurnOffAccelerator(), accelerator)
+    );
 
-    ShooterTrigger.onTrue(new InstantCommand(() -> {shooter.SetShooter();}));
-    // ShooterTrigger.onTrue(
-    // Commands.sequence(
-    //       Commands.runOnce(() -> catcher.SetExtended(), catcher),
-    //       Commands.runOnce(() -> catcher.SetCatching(), catcher),
-    //       Commands.waitSeconds(1),
-    //       Commands.runOnce(() -> catcher.SetExtended(), catcher),
-    //       Commands.runOnce(() -> catcher.SetCatching(), catcher)
-    //   ).repeatedly().until(isShootingSupplier)
-    // );
-    ShooterTrigger.onTrue(new InstantCommand(() -> {cap.RunExtender();}));
-    ShooterTrigger.onTrue(new InstantCommand(() -> {accelerator.SetAccelerator();}));
-    CylinderTrigger.onTrue(new InstantCommand(() -> {cilindro.SetCylinder();}));
-    // CylinderTrigger.onTrue(new InstantCommand(()-> {catcher.SetRetracting();}));
-    // CatcherTrigger.onTrue(new InstantCommand(() -> {catcher.SetExtended();}));
-    CatcherTrigger.onTrue(new InstantCommand(() -> {catcher.SetCatching();}));
-    DropperTrigger.onTrue(new InstantCommand(() -> {catcher.setDropping();}));
-    
+    shooter.setDefaultCommand(
+      new RunCommand(() -> shooter.TurnOffShooter(), shooter)
+    );
+  }
 
+  private void configureBindings() {
 
-    
-    autoChooser = AutoBuilder.buildAutoChooser();
+    // AIM
+    new JoystickButton(driver, 6).onTrue(
+      new LimeLightCommand(
+        () -> -driver.getLeftY(),
+        () -> -driver.getLeftX(),
+        () -> driver.getR1ButtonPressed(),
+        limelight,
+        () -> driver.getL2ButtonPressed(),
+        swerve
+      )
+    );
+
+    // SHOOT
+    new JoystickButton(driver, 7).onTrue(
+      Commands.sequence(
+        new InstantCommand(() -> shooter.SetShooter()),
+        new InstantCommand(() -> cap.RunExtender()),
+        new InstantCommand(() -> accelerator.SetAccelerator())
+      )
+    );
+
+    // CYLINDER / EXTENSION SEQUENCE (unchanged logic)
+    new JoystickButton(driver, 5).onTrue(
+      Commands.sequence(
+        Commands.waitSeconds(.4),
+        new InstantCommand(() -> catcher.toggleExtended(), catcher),
+        Commands.waitSeconds(.4),
+        new InstantCommand(() -> catcher.toggleExtended(), catcher),
+        new InstantCommand(() -> catcher.setIntake())
+      )
+    );
+
+    // =========================
+    // COPILOT (UPDATED CATCHER)
+    // =========================
+
+    // EXTEND TOGGLE
+    new JoystickButton(copilot, 1)
+        .onTrue(new InstantCommand(() -> catcher.toggleExtended()));
+
+    // DROP (hold)
+    new JoystickButton(copilot, 7)
+        .whileTrue(new RunCommand(() -> catcher.setExpel(), catcher))
+        .onFalse(new InstantCommand(() -> catcher.stop()));
+
+    // SUCK / INTAKE (hold)
+    new JoystickButton(copilot, 8)
+        .whileTrue(new RunCommand(() -> catcher.setIntake(), catcher))
+        .onFalse(new InstantCommand(() -> catcher.stop()));
+  }
+
+  // ================= AUTO =================
+  private void configureAuto() {
+
+    NamedCommands.registerCommand("LimeLight-Oriented",
+        new LimeLightCommandAuto(limelight, swerve));
+
+    NamedCommands.registerCommand("ShooterState",
+        new InstantCommand(() -> shooter.SetShooter()));
+
+    NamedCommands.registerCommand("CapState",
+        new InstantCommand(() -> cap.RunExtender()));
+
+    NamedCommands.registerCommand("AccelState",
+        new InstantCommand(() -> accelerator.SetAccelerator()));
+
+    NamedCommands.registerCommand("CylinderState",
+        new InstantCommand(() -> cilindro.SetCylinder()));
+
+    NamedCommands.registerCommand("AxisState",
+        new InstantCommand(() -> catcher.toggleCatch()));
+
+    NamedCommands.registerCommand("ExtenderState",
+        new InstantCommand(() -> catcher.toggleExtended()));
+
+    NamedCommands.registerCommand("SubsystemsOFF",
+        Commands.sequence(
+          new InstantCommand(() -> shooter.TurnOffShooter()),
+          new InstantCommand(() -> accelerator.TurnOffAccelerator()),
+          new InstantCommand(() -> cilindro.TurnOffCylinder()),
+          new InstantCommand(() -> catcher.stop()),
+          new InstantCommand(() -> cap.RunExtender())
+        )
+    );
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
-
- 
 }

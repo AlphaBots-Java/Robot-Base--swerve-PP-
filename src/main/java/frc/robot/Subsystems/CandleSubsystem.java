@@ -25,7 +25,7 @@ public class CandleSubsystem extends SubsystemBase {
         // In Phoenix 6 (2025+), the constructor only takes (numLed, startIdx).
         // Use .withColor and .withSpeed to configure the animation.
         StrobeAnimation strobe = new StrobeAnimation(CandleConstants.kLedCount, 0)
-            .withColor(new RGBWColor(0,255,0));
+            .withColor(new RGBWColor(1,83,47));
             candle.setControl(strobe);
     }
 

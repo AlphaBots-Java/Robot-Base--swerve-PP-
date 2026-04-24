@@ -72,7 +72,11 @@ public class Cylinder extends SubsystemBase {
         // SmartDashboard.putNumber("CylinderBallVelocityMS", 0.01534 * getCylinderVelocityRPM());
     }
     public void SetCylinder(){
-            isShooting = !isShooting;
+        isShooting = !isShooting;
+    }
+
+    public void TurnOffCylinder(){
+        isShooting = false;
     }
     @Override
     public void periodic(){

@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.LimelightHelpers;
 import frc.robot.Subsystems.LimeLightSubsystem;
 import frc.robot.Subsystems.SwerveSubsystem;
 
@@ -38,11 +40,11 @@ public class LimeLightCommandAuto extends Command{
     @Override
     public void execute() {
         // 1. Get real-time joystick inputs
-        NetworkTableEntry tx = LimeLightSubsystem.table.getEntry("tx");
+        double tx = LimelightHelpers.getTX(LimelightConstants.limelightTableName);
         double aligningMaxSpd = 0.17;
         
 
-        double correctRotation = MathUtil.clamp(pid.calculate(tx.getDouble(0.0), 0), -aligningMaxSpd, aligningMaxSpd);
+        double correctRotation = MathUtil.clamp(pid.calculate(tx, 0), -aligningMaxSpd, aligningMaxSpd);
 
         SmartDashboard.putNumber("tx", correctRotation);
 
@@ -76,7 +78,7 @@ public class LimeLightCommandAuto extends Command{
 
     @Override
     public boolean isFinished() {
-        if(timer.hasElapsed(2)){
+        if(timer.hasElapsed(1)){
             return true;
         }
         else{
