@@ -12,32 +12,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.AutoConstants;
+
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.LimeLightSubsystem;
+import frc.robot.Subsystems.MegaTagSubsystem;
 import frc.robot.Subsystems.SwerveSubsystem;
 
-public class LimeLightCommand extends Command{
-    LimeLightSubsystem limeLightSubsystem = new LimeLightSubsystem();
+public class LimeLightCommandMT extends Command{
+    MegaTagSubsystem megaTagSubsystem = new MegaTagSubsystem();
     SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     public PIDController pid = new PIDController(0.02, 0.0, 0.0);
     private SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private Supplier<Double> xSpdFunction, ySpdFunction;
-    private Supplier<Boolean> endAimSup, shooterSup;
+    private Supplier<Boolean> endAimSup;
     boolean canGoBack;
 
 
     
 
-    public LimeLightCommand(Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction,Supplier<Boolean> endAim, LimeLightSubsystem limelight, Supplier<Boolean> shooterSupplier, SwerveSubsystem swerve){
+    public LimeLightCommandMT(Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction,Supplier<Boolean> endAim, MegaTagSubsystem limelight, SwerveSubsystem swerve){
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
-        this.shooterSup = shooterSupplier;
         this.endAimSup = endAim;
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-        limeLightSubsystem = limelight;
+        megaTagSubsystem = limelight;
         swerveSubsystem = swerve;
         this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
 
@@ -51,13 +52,13 @@ public class LimeLightCommand extends Command{
 
     @Override
     public void execute() {
-        double tx = LimelightHelpers.getTX(LimelightConstants.limelightTableName);
+        double tx = Math.atan2(MegaTagSubsystem.getYDistanceToHub(), MegaTagSubsystem.getXDistanceToHub());
         double aligningMaxSpd = 0.6;
         
         
         double correctRotation = MathUtil.clamp(pid.calculate(tx, 0), -aligningMaxSpd, aligningMaxSpd);
         
-        SmartDashboard.putNumber("tx", correctRotation);
+        // SmartDashboard.putNumber("tx", correctRotation);
         
         // 1. Get real-time joystick inputs
 

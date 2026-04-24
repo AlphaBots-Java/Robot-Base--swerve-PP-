@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchBallsEsq"
+            "pathName": "Trent balls"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BallsTrenchEsq"
+            "pathName": "BallsTrenchSide"
           }
         },
         {
@@ -50,12 +50,6 @@
           "type": "named",
           "data": {
             "name": "CapState"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchHubSideEsq"
           }
         },
         {
@@ -189,6 +183,54 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SubsystemsOFF"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShortTB"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AccelState"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLight-Oriented"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CylinderState"
           }
         }
       ]

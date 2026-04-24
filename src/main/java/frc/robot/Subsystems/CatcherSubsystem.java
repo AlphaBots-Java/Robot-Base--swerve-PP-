@@ -8,143 +8,109 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-// Positive Out extender
-// positive shoots axis out the robot
+public class CatcherSubsystem extends SubsystemBase {
 
-public class CatcherSubsystem extends SubsystemBase{
-    private final TalonFX krakenExtensor = new TalonFX(51, "BallSystemCAN");
-    private final TalonFX krakenCatcher = new TalonFX(52, "BallSystemCAN");
-    private final CANcoder catcherCANcoder = new CANcoder(50, "BallSystemCAN");
-    boolean isExtended = false;
-    int isCatching = 0;
-    double newSpeed = 0;
-    double clampedSetPoint = 0;
-    double axisSpeedSetpoint = 0;
+    private static final int EXTENSOR_ID = 51;
+    private static final int CATCHER_ID = 52;
+    private static final int CANCODER_ID = 50;
+    private static final String CAN_BUS = "BallSystemCAN";
 
-    private PIDController catcherController = new PIDController(2.3, 0.0, 0.1);
-    // private PIDController catcherController = new PIDController(0.5, 0, 0); Debug PID values
-    private PIDController AxisController = new PIDController(0.03, 0, 0);
+    private static final double EXTENDED_POS = 2.8;
+    private static final double RETRACTED_POS = 0.2;
 
-    public CatcherSubsystem(){
-        isCatching = 0;
-        isExtended = false;
-        newSpeed = 0;
-        clampedSetPoint = 0;
-        axisSpeedSetpoint = 0;
+    private static final double CATCH_SPEED = 0.9;
+
+    private final TalonFX extensor = new TalonFX(EXTENSOR_ID, CAN_BUS);
+    private final TalonFX catcher = new TalonFX(CATCHER_ID, CAN_BUS);
+    private final CANcoder encoder = new CANcoder(CANCODER_ID, CAN_BUS);
+
+    private final PIDController extenderPID = new PIDController(2.3, 0.5, 0.2);
+
+    private boolean extended = false;
+
+    private enum CatchState {
+        IDLE,
+        INTAKE,
+        EXPEL
     }
 
+    private CatchState catchState = CatchState.IDLE;
 
-    public void setCatcherExtenderMM(double setPoint){
-        clampedSetPoint = setPoint;
-        krakenExtensor.setVoltage(catcherController.calculate(-catcherCANcoder.getPosition().getValueAsDouble(), clampedSetPoint)); 
-        // if(isCatching == 2 && catcherController.calculate(-catcherCANcoder.getPosition().getValueAsDouble(), clampedSetPoint) < 0.5){
-        //     isCatching = 0;
-        // }
+    public CatcherSubsystem() {
+        extenderPID.setTolerance(0.05);
     }
 
-    // public void setCatcherExtenderCREU(double setPoint){
-    //     new Thread(() -> {
-    //         clampedSetPoint = setPoint;
-    //         while(!(catcherController.calculate(-catcherCANcoder.getPosition().getValueAsDouble(), clampedSetPoint) < 0.5 && catcherController.calculate(-catcherCANcoder.getPosition().getValueAsDouble(), clampedSetPoint) > -0.5)){
-    //             krakenExtensor.setVoltage(catcherController.calculate(-catcherCANcoder.getPosition().getValueAsDouble(), clampedSetPoint)); 
-    //         }
-    //         krakenExtensor.setVoltage(0);
-    //         return;
-    //     }).start(); 
-    // }
+    // ================= EXTENSION =================
 
-
-    public void SetExtendedCREU(){
-        // if(isExtended == false){
-        //     setCatcherExtenderCREU(2.6);
-        // }
-        // if(isExtended == true){
-        //     setCatcherExtenderCREU(0);
-        // }
-        isExtended = !isExtended;
+    public void toggleExtended() {
+        extended = !extended;
     }
 
-    public void SetExtended(){
-        // if(isExtended == false){
-        //     setCatcherExtenderMM(2.6);
-        //     // setExpellingTrue();
-        // }
-        // if(isExtended == true){
-        //     setCatcherExtenderMM(0);
-        // }
-        isExtended = !isExtended;
+    public void setExtended(boolean value) {
+        extended = value;
     }
 
+    // ================= CATCH STATE =================
 
-
-    public void SetExtendedTrue(){
-        // setCatcherExtenderMM(2.6);
-        isExtended = true;
-    }
-
-    public void SetCatching(){
-        if(isCatching == 0 || isCatching == 2){
-            isCatching = 1;
-        }
-        else{
-            isCatching = 0;
-        }
-    }
-    public void SetCatchingTrue(){
-        isCatching = 1;
-    }
-
-    public void SetCatchingFalse(){
-        isCatching = 0;
-    }
-
-    public void setExpellingTrue(){
-        isCatching = 2;
-    }
-
-    public void setDropping(){
-        if(isCatching == 0 || isCatching == 1){
-            isCatching = 2;
-        }
-        else{
-            isCatching = 0;
+    public void toggleCatch() {
+        if (catchState == CatchState.IDLE || catchState == CatchState.EXPEL) {
+            catchState = CatchState.INTAKE;
+        } else {
+            catchState = CatchState.IDLE;
         }
     }
 
-
-    void DebugCatcher(){
-        SmartDashboard.putNumber("Catcher CanCoder", catcherCANcoder.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("extenderSetpoint", clampedSetPoint);
-
+    public void setIntake() {
+        catchState = CatchState.INTAKE;
     }
+
+    public void setExpel() {
+        catchState = CatchState.EXPEL;
+    }
+
+    public void stop() {
+        catchState = CatchState.IDLE;
+    }
+
+    // ================= CONTROL =================
+
+    private void updateExtension() {
+        double setpoint = extended ? EXTENDED_POS : RETRACTED_POS;
+
+        double error = -encoder.getPosition().getValueAsDouble();
+        double output = extenderPID.calculate(error, setpoint);
+
+        extensor.setVoltage(output);
+    }
+
+    private void updateCatcher() {
+        switch (catchState) {
+            case INTAKE -> catcher.set(-CATCH_SPEED);
+            case EXPEL -> catcher.set(CATCH_SPEED);
+            case IDLE -> catcher.set(0);
+        }
+    }
+
+    // ================= DEBUG =================
+
+    private void debug() {
+        SmartDashboard.putNumber("Catcher/Encoder", encoder.getPosition().getValueAsDouble());
+        SmartDashboard.putBoolean("Catcher/Extended", extended);
+        SmartDashboard.putString("Catcher/State", catchState.name());
+    }
+
+    // ================= PERIODIC =================
 
     @Override
-    public void periodic(){
-        DebugCatcher();
-        if(DriverStation.isEnabled()){
-            if(isExtended == false){
-                setCatcherExtenderMM(0);
-            }else if (isExtended == true){
-                setCatcherExtenderMM(3.0);
-            }
+    public void periodic() {
+        debug();
 
-            if(isCatching == 1){
-                // setCatcherVelocity(CatcherSpeed);
-                krakenCatcher.set(-0.9);
-            }else if(isCatching == 2){
-                // setCatcherVelocity(-CatcherSpeed);
-                krakenCatcher.set(0.9);
-            }
-            else if(isCatching == 0){
-                // setCatcherVelocity(0.0);
-                krakenCatcher.set(0.0);
-            }
-        }else{
-            isCatching = 0;
-            krakenCatcher.set(0);
-            // setCatcherVelocity(0.0);
+        if (DriverStation.isEnabled()) {
+            updateExtension();
+            updateCatcher();
+        } else {
+            catchState = CatchState.IDLE;
+            catcher.set(0);
         }
-        DebugCatcher();
-        
     }
 }

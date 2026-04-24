@@ -19,8 +19,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ModuleConstants;
 
-
-
 public class SwerveModule {
     
     private final TalonFX driveMotor;

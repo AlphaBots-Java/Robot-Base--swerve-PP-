@@ -20,10 +20,16 @@ public class Accelerator extends SubsystemBase{
 
     
     public void applyVelocity(double SpeedRPM, double Kg){
-        accelSetPoint = SpeedRPM;
-        velocityOutput += pid.calculate(acceleratorKraken.getVelocity().getValueAsDouble(), -SpeedRPM / 60 * (24/18));
-        acceleratorKraken.setVoltage(velocityOutput);
-        SmartDashboard.putNumber("Accelerator SetPoint", SpeedRPM * (24/18));
+        if(SpeedRPM != 0){
+            accelSetPoint = SpeedRPM;
+            velocityOutput += pid.calculate(acceleratorKraken.getVelocity().getValueAsDouble(), -SpeedRPM / 60 * (24/18));
+            acceleratorKraken.setVoltage(velocityOutput);
+            SmartDashboard.putNumber("Accelerator SetPoint", SpeedRPM * (24/18));
+        }else{
+            accelSetPoint = SpeedRPM;
+            acceleratorKraken.setVoltage(0);
+            SmartDashboard.putNumber("Accelerator SetPoint", 0);
+        }
     }
 
     public void applyVelocityMS(double MS, double Kg){
@@ -61,7 +67,7 @@ public class Accelerator extends SubsystemBase{
                 //     // applyVelocity(LimeLightSubsystem.calculateSpeed() * ShooterConstants.kAcceleratorMultiplierRPM, 0);
                 //     applyVelocity(3210,0 );
                 // }else{
-                    applyVelocity(3210,0 );
+                    applyVelocity(2910,0 );
                 // }
             }
         }else{

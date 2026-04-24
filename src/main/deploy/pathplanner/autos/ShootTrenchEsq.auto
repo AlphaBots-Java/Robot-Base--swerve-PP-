@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BallsTrenchEsq"
+            "pathName": "BallsTrenchSideEsq"
           }
         },
         {
@@ -50,12 +50,6 @@
           "type": "named",
           "data": {
             "name": "CapState"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchHubSideEsq"
           }
         },
         {
@@ -189,6 +183,24 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SubsystemsOFF"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AxisState"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HubDepot"
           }
         }
       ]

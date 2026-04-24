@@ -89,9 +89,9 @@ public final class Constants {
                 DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 2;
         public static final double kMaxAccelerationMetersPerSecondSquared = 40;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;
-        public static final double kPXController = 1.5;
-        public static final double kPYController = 1.5;
-        public static final double kPThetaController = 0.5;
+        public static final double kPXController = 2.5;
+        public static final double kPYController = 2.5;
+        public static final double kPThetaController = 1;
         public static final double kAngleDeadband = 0.05;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = 
@@ -101,6 +101,9 @@ public final class Constants {
     }
 
     public static final class OIConstants {
+        public static final int ControllerPort = 0;
+        public static final int CopilotControllerPort = 1;
+
         public static final int kDriverControllerPort = 0;
 
         public static final int kDriverYAxis = 1;
@@ -111,14 +114,21 @@ public final class Constants {
         public static final double kDeadband = 0.05;
     }
 
+    public static final class LimelightConstants {
+        public static final String limelightTableName = "limelight-dir";
+
+        public static final double distanceHubXMeters = 4.6269;
+        public static final double distanceHubYMeters = 4;
+    }
+
     public static final class ShooterConstants{
         public static final double kCapStep = 360/21; // angle generated for each axis spin
         // we don`t know the above yet
 
         public static final double CapMotorGearRatio = 100;
 
-        public static final double kShooterLowSpeedRPM = 10;
-        public static final double kShooterHighSpeedRPM = 10;
+        public static final double kShooterLowSpeedRPM = 2900;
+        public static final double kShooterHighSpeedRPM = 00;
         
         public static final double kCylinderMultiplierRPM = 0.8;
         public static final double kAcceleratorMultiplierRPM = 0.8;

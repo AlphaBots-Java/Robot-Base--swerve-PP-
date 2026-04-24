@@ -16,11 +16,7 @@ import frc.robot.Subsystems.CandleSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  // ShooterSubsystem shooter = new ShooterSubsystem();
-  // Cylinder cylinder = new Cylinder();
-  // Accelerator accel = new Accelerator();
-  // CapSubsystem cap = new CapSubsystem();
-  // PS5Controller ps = new PS5Controller(0);
+
   CandleSubsystem CANdle = new CandleSubsystem();
 
   private final RobotContainer m_robotContainer;
@@ -31,7 +27,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    // CANdle.setRainbow();// Run rainbow for 5 seconds on boot to signal initialization
+  
   }
 
   @Override
